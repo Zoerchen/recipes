@@ -1,0 +1,467 @@
+<!DOCTYPE html> <!-- sagt dem Browser: das ist HTML5 -->
+<html> <!-- das Wurzelelement, alles sitzt darin -->
+
+<head> <!-- unsichtbare Infos (Titel, Zeichensatz usw.) -->
+
+    <meta charset="UTF-8"> <!-- welche Zeichen der Browser darstellen soll  -->    
+    
+    <title>Rezeptebuch</title> <!-- Titel der beim Tab angezeigt wird-->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- Supabase JavaScript Library benutzen -->
+    
+    <style> /* CSS */
+
+        h1 /* Style des Headers 1 */
+        {                
+            color: rgb(125, 21, 154);
+        }
+
+        h2 /* Style des Headers 1 */
+        {                
+            color: rgb(125, 21, 154);
+        }
+
+        body /* Style des Bodys */
+        {
+            background-color: rgb(210, 128, 232);
+        }
+
+        button /* Style des Buttons */
+        {
+            background-color:rgb(109, 186, 219);
+            padding: 10px;
+            box-shadow: 5px 5px rgb(75, 66, 200);
+            border-radius: 10px;
+            border: none;
+            cursor: pointer; /* Mauszeiger wird zur Hand beim Hover */
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        button:active /* Style des Buttons, wenn er gedrückt wird*/
+        {
+            box-shadow: none;
+            transform: translateY(2px);
+            
+        }
+
+        button:hover
+        {
+            box-shadow: 3px 3px rgb(75, 66, 200);
+            transform: translateY(2px);
+        }
+
+        .hidden /* Klasse von Elementen die versteckt sind*/
+        {
+            display: none !important;
+        }
+
+        .modal-overlay
+        {
+            position: fixed;      /* bleibt immer im Sichtfeld, auch beim Scrollen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);  /* halbtransparentes Schwarz */
+            display: flex;
+            align-items: center;
+            justify-content: center;  /* Modal-Inhalt zentrieren */
+            z-index: 999;             /* über allem anderen */
+        }
+
+        .modal
+        {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        /********************* Hauptansicht: Rezepte übersicht ****************************/   
+
+        .card /* Style von Rezeptekarten*/
+        {
+            border-radius: 10px;
+            aspect-ratio: 1; /*Quadration*/
+            background-color: rgb(255, 147, 232);
+            box-shadow: 5px 5px rgb(125, 21, 154);
+            cursor: pointer; /* Mauszeiger wird zur Hand beim Hover */
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .card:active /* Style der Karte, wenn sie gedrückt wird*/
+        {
+            box-shadow: none !important;
+            transform: translateY(5px) !important;
+            
+        }
+
+        .card:hover
+        {
+            box-shadow: 3px 3px rgb(125, 21, 154);
+            transform: translateY(2px);
+        }
+
+        
+
+        .card img /* Einstellungen für die Bilder auf den Karten*/
+        {
+            width: 100%;        /* Bild füllt die Kartenbreite */
+            height: 70%;      /* feste Höhe */
+            object-fit: cover;  /* Bild wird zugeschnitten, nicht verzerrt */
+            border-radius: 10px 10px 0px 0px;
+            background-color: rgb(109, 186, 219);
+            object-position: center;
+            
+        }
+
+        .card h2
+        {
+            padding-left: 10px;
+        }
+
+        .card h2:hover::after {
+            content: attr(data-tooltip);
+            background: rgba(125, 21, 154);
+            color: rgb(255, 147, 232);
+            position: absolute;
+            white-space-collapse: break-spaces;
+            width: fit-content;
+            font-size: 12px;
+        }
+
+    
+        .grid-container /* Grid stlye für die Rezeptekarten*/
+        {
+            display: grid; /*definiert grid, inline-grid oder grid*/
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            padding: 10px;
+            grid-gap: 20px;
+        }
+
+
+        /********************* Detailansicht von einem Rezept ****************************/    
+
+
+        .detail /* Style für die Detailansicht*/
+        {
+            border-radius: 10px;
+            aspect-ratio: 2; 
+            /*Quadration aspect-ratio: 1; */
+            background-color: rgb(255, 147, 232);
+            box-shadow: 5px 5px rgb(125, 21, 154);
+
+    
+        }
+
+        .detail-grid /*Struktur für die Detailansicht*/
+        {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail img
+        {
+            grid-row: span 3; /* nimm 3 Reihen ein */
+            justify-self: end; /* innerhalb vom Grid rechtsbündig */
+            box-shadow: 5px 5px rgb(75, 66, 200);
+            width: auto;        /* Bild füllt die Kartenbreite */
+            height: 40%;      /* feste Höhe */
+            object-fit: scale-down;  /* Bild wird zugeschnitten, nicht verzerrt */
+            border-radius: 0px 10px 0px 0px;
+            background-color: rgb(109, 186, 219);
+            object-position: center;
+            border: 5px solid rgb(109, 186, 219);
+            margin: 25px;
+        }
+
+        .detail img:hover
+        {
+            box-shadow: 3px 3px rgb(75, 66, 200);
+            transform: translateY(2px);
+        }
+
+        .detail-span-horizontal
+        {
+            grid-column: span 2;
+        }
+
+
+/**/
+  
+    </style>
+
+</head>
+
+<body> <!-- alles was der Benutzer sieht -->
+
+    <div id="main"> <!--Hauptseite-->
+
+        <div id="header">
+            <h1>Leslie ist so cute</h1> <!-- Überschrift -->
+        </div>
+
+    
+        
+        <div id="book" class="grid-container"></div> <!-- Container in dem Rezepte gezeigt werden-->
+
+        <div id="add-recipes">
+            <button id="add-recipe">Neues Rezept hinzufügen</button> <!-- Rezept hinzufügen button-->
+            <div id="recipe-input" class="hidden"> <!-- Container für den Rezeptinput-->
+                    <input id="title" placeholder="Rezeptname eingeben"> <!-- Eingabe von Titel, selbstschließender Tag-->
+                    <textarea id="ingredients" placeholder="Zutaten eingeben"></textarea> <!--Eingabe von Zutaten-->
+                    <textarea id="instructions" placeholder="Anweisungen eingeben"></textarea> <!--Eingabe von Beschreibung-->
+                    <button id="confirm">Rezeptinformationen speichern</button>
+                    <button id="saveDraft">Entwurf speichern</button>
+                    <button id="cancel">Abbrechen</button>
+            </div>
+        </div>
+
+        <div id="confirm-modal" class="modal-overlay hidden">
+            <div class="modal">
+                <p>Willst du wirklich abbrechen?</p>
+                <button id="modal-ja">Ja</button>
+                <button id="modal-nein">Nein</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="detail" class="hidden detail detail-grid"> <!-- Detailansicht eines Rezeptes-->
+
+        <h2 id="detail-title"></h2> <!-- Titel -->
+        <img id="detail-image">
+        <p id="detail-total_time"></p>
+        <p id="detail-yields"></p>
+        <p id="detail-ingredients" class="detail-span-horizontal"></p> <!-- Zutaten -->
+        <p id="detail-instructions"class="detail-span-horizontal"></p> <!-- Anweisungen -->
+        <button id="back">Zurück zu den Rezepten</button>    
+           
+    </div>
+
+     <!--
+<h1> bis <h6> – Überschriften (h1 = groß, h6 = klein)
+<p> – ein Textabsatz
+<div> – ein unsichtbarer Container zum Gruppieren von Elementen
+<button> – ein klickbarer Button
+<input> – ein Eingabefeld
+  -->  
+
+    
+
+
+    
+
+    <script> // Javaskript
+
+        // Die Verbindung mit Supabase herstellen
+        const { createClient } = supabase
+        const db = createClient('https://uljwzbmfeywdenmwfgwl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsand6Ym1mZXl3ZGVubXdmZ3dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDI0MDksImV4cCI6MjA5MzM3ODQwOX0.PnwrRKOBCH7k2Jqr37xY-r0RTpmaseZvLdlm_QLkv_E')
+        console.log(db)
+
+        // lokale Rezeptedaten mit der Database aktualisieren und anzeigen
+        async function updateRecipes(event)
+        {   
+            // alle rezepte laden
+            const { data: recipes, error } = await db
+            .from('recipes')
+            .select("*")
+            console.log(error)
+            console.log(recipes)
+            
+            // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
+            document.getElementById("book").innerHTML = ""
+
+            
+            //Rezepte anzeigen
+            recipes.forEach(loadRecipes);    
+        }
+
+        // Rezepte anzeigen
+        function loadRecipes(recipe)
+        {
+            // Rezeptkarte erstellen
+            const recipe_card = document.createElement("div")
+            recipe_card.classList.add("card");
+            recipe_card.addEventListener("click", function() {clickRecipe(recipe_card, recipe)}); // einn rezept anklicken
+            document.getElementById("book").appendChild(recipe_card);
+
+            //Bild hinzufügen
+            const card_image = document.createElement("img");
+            card_image.src = recipe.image || "https://placehold.co/300x200/transparent/transparent";
+            card_image.alt = "Bild kann nicht geladen werden."
+            card_image.loading = "lazy"; //Laden auf den sichtbaren Bereich (Viewport) zu beschränken
+            recipe_card.appendChild(card_image)
+
+            //Titel hinzufügen
+            const card_title = document.createElement("h2");
+            if (recipe.title.length > 25)
+            {
+                card_title.textContent = recipe.title.slice(0, 22) + "..." ;
+                card_title.dataset.tooltip = recipe.title //damit der ganze Titel angezeigt wird wenn man drauf bleibt
+            }
+            else
+            {
+                card_title.textContent = recipe.title;    
+            }
+            recipe_card.appendChild(card_title)
+
+        }
+
+        //Anklicken eines Rezeptes
+        function clickRecipe(card, recipe)
+        {
+            setTimeout(function()
+            {
+                detailRecipe(recipe);
+                window.scrollTo(0, 0) // Nach oben scrollen
+                document.getElementById("main").classList.add("hidden");
+                document.getElementById("detail").classList.remove("hidden");
+            }, 200)
+            
+            
+        }
+
+
+        //Zurück zu den Rezepten Button
+        document.getElementById("back").addEventListener("click", function()
+        {
+            document.getElementById("detail").classList.add("hidden");
+            document.getElementById("main").classList.remove("hidden");
+        });
+
+        //Detail ansicht von einem rezept laden
+        function detailRecipe(recipe)
+        {
+            //Rezept laden
+            document.getElementById("detail-title").textContent = recipe.title;
+            document.getElementById("detail-ingredients").textContent = recipe.ingredients;
+            document.getElementById("detail-instructions").textContent = recipe.instructions;
+            document.getElementById("detail-yields").textContent = recipe.yields;
+            document.getElementById("detail-total_time").textContent = recipe.total_time;
+            document.getElementById("detail-image").src = recipe.image || "https://placehold.co/300x200/transparent/transparent";
+            document.getElementById("detail-image").loading = "lazy"; //Laden auf den sichtbaren Bereich (Viewport) zu beschränken
+
+
+
+        }
+
+        
+
+
+
+        // Rezepte aus der Datenbank laden und anzeigen, wenn die Seite neu gestartet wird
+        document.addEventListener('DOMContentLoaded', updateRecipes);
+
+
+        // Manuelle Rezepteingabe Freischalten
+        document.getElementById("add-recipe").addEventListener("click", function()
+        {
+            document.getElementById("recipe-input").classList.remove("hidden")
+        });
+
+
+
+        // Eingegebende Rezept-Informationen in die Datenbank schreiben
+        document.getElementById("confirm").addEventListener("click", async function()
+        {
+            // Input lesen
+            const title = document.getElementById('title').value;
+            const ingredients = document.getElementById('ingredients').value;
+            const instructions = document.getElementById('instructions').value;
+
+            // In Datenbank schreiben
+            const { data, error } = await db //await: Warte bis Supabase reagiert
+                .from('recipes')
+            .insert({ title : title, ingredients : ingredients, instructions : instructions})
+            console.log(error)
+
+            // Input zurücksetzen
+            document.getElementById('title').value = "";
+            document.getElementById('ingredients').value = "";
+            document.getElementById('instructions').value = "";
+
+            //Manuelle Rezepte eingabe wieder verdecken
+            document.getElementById("recipe-input").classList.add("hidden")
+
+            //lokale Rezeptdaten neuladen und anzeigen
+            updateRecipes();
+
+        });
+
+        
+        //Neues Rezept eingeben abbrechen aber Draft speichern
+        document.getElementById("saveDraft").addEventListener("click", function()
+        {
+            //Manuelle Rezepte eingabe wieder verdecken
+            document.getElementById("recipe-input").classList.add("hidden")
+
+        });
+        
+        //Neues Rezept eingeben abbrechen
+        document.getElementById("cancel").addEventListener("click", function()
+        {   
+            //Confirm modal öffnen
+            document.getElementById('confirm-modal').classList.remove("hidden");
+
+        });
+
+        document.getElementById("modal-ja").addEventListener("click", function()
+        {
+            // Input zurücksetzen
+            document.getElementById('title').value = "";
+            document.getElementById('ingredients').value = "";
+            document.getElementById('instructions').value = "";
+
+            //Manuelle Rezepte eingabe wieder verdecken
+            document.getElementById("recipe-input").classList.add("hidden");
+
+            //Confirm modal schließen
+            document.getElementById('confirm-modal').classList.add("hidden");
+
+        })
+
+        document.getElementById("modal-nein").addEventListener("click", function()
+        {
+            //Confirm modal schließen
+            document.getElementById('confirm-modal').classList.add("hidden");
+        })
+
+        
+
+
+    </script>
+
+</body>
+
+</html>
+
+<!--
+<h1> bis <h6> – Überschriften (h1 = groß, h6 = klein)
+<p> – ein Textabsatz
+<div> – ein unsichtbarer Container zum Gruppieren von Elementen
+<button> – ein klickbarer Button
+<input> – ein Eingabefeld
+  -->
+
+<!--
+  eigene Klassen definieren:
+  in HTML dann so
+  <div class="karte">...</div>
+  und in CSS dann so
+  .karte {
+  background: lightgrey;
+    }
+  -->
+
+<!--Javascript
+  auf ein Element zugreifen:
+  document.getElementById("mein-element")
+  so ID in Html vergeben:
+  <button id="mein-button">Klick mich</button>
+
+  alert("string") Popup
+
+  console.log("Hallo!") Print to COnsole
+  -->
