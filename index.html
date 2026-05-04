@@ -11,30 +11,25 @@
     
     <style> /* CSS */
 
-        h1 /* Style des Headers 1 */
-        {                
-            color: rgb(125, 21, 154);
-        }
-
-        h2 /* Style des Headers 1 */
-        {                
-            color: rgb(125, 21, 154);
-        }
-
-        body /* Style des Bodys */
+        body /* globale Einstellungen */
         {
-            background-color: rgb(210, 128, 232);
+            color: rgb(125, 21, 154);
+            font-family: "Times New Roman", Times, serif;
+            background-color: rgb(210, 128, 232)
         }
+
 
         button /* Style des Buttons */
         {
             background-color:rgb(109, 186, 219);
+            color: rgb(75, 66, 200);
             padding: 10px;
             box-shadow: 5px 5px rgb(75, 66, 200);
             border-radius: 10px;
             border: none;
             cursor: pointer; /* Mauszeiger wird zur Hand beim Hover */
             transition: transform 0.1s, box-shadow 0.1s;
+            font-family: "Times New Roman", Times, serif;
         }
 
         button:active /* Style des Buttons, wenn er gedrückt wird*/
@@ -50,6 +45,19 @@
             transform: translateY(2px);
         }
 
+        .edit-buttons /*Style für Buttons im Editiermodus*/
+        {
+            box-shadow: 5px 5px rgb(125, 21, 154);
+            background: rgba(255, 255, 255, 0.3);  
+            color: rgb(125, 21, 154);
+        }
+
+        .edit-buttons:hover
+        {
+            box-shadow: 3px 3px rgb(125, 21, 154);
+            transform: translateY(2px);
+        }
+
         .hidden /* Klasse von Elementen die versteckt sind*/
         {
             display: none !important;
@@ -62,7 +70,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);  /* halbtransparentes Schwarz */
+            background: rgba(210, 128, 232, 0.5);  /* halbtransparentes Schwarz */
             display: flex;
             align-items: center;
             justify-content: center;  /* Modal-Inhalt zentrieren */
@@ -71,13 +79,102 @@
 
         .modal
         {
-            background: white;
+            background: rgb(210, 128, 232);
+            box-shadow: 5px 5px rgb(125, 21, 154);
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: 10px;
             text-align: center;
         }
 
-        /********************* Hauptansicht: Rezepte übersicht ****************************/   
+        .blue
+        {
+            box-shadow: 5px 5px rgb(75, 66, 200);
+            background-color: rgb(109, 186, 219);
+            color: rgb(75, 66, 200);
+        }
+
+        .blue:hover
+        {
+            box-shadow: 3px 3px rgb(75, 66, 200);
+            transform: translateY(2px);
+        }
+
+        ::placeholder {
+        color: rgb(75, 66, 200);
+        opacity: 1; /* Firefox */
+        font-family: "Times New Roman", Times, serif;
+        }
+
+        /********************* Header ****************************/  
+        
+        #header {
+            
+            position: fixed;
+            z-index: 100;
+            top: 10px;
+            left: 500px;
+            right: 500px;
+            
+            transition: padding 0.3s, font-size 0.3s;
+        }
+
+        .header-small {
+            padding: 0px 5px; 
+            font-size: 10px;
+        }
+
+        #header-main
+        {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* links, mitte, rechts */
+            padding: 0px 20px; /*oben-unten links-rechts*/
+        }
+
+        #header-left
+        {
+            cursor: pointer;
+        }
+
+        #header-right
+        {
+            cursor: pointer;
+        }
+
+
+        #search-field
+        {
+            padding: 10px;
+            height: 20px;
+        }
+
+        #search-value
+        {
+            width: 100%;
+            box-sizing: border-box;
+            height: 20px;
+            
+            background: transparent;
+            border-radius: 10px 10px 10px 10px; 
+            color:rgb(75, 66, 200);
+            border: 2px solid rgb(75, 66, 200);
+            font-size: 14px;
+            text-indent: 5px;
+        }
+
+
+        .search-mode
+        {
+            border-radius: 0px 0px 10px 10px;    
+        }
+
+
+        /********************* Hauptansicht: Rezepte übersicht ****************************/ 
+        
+        #main
+        {
+            padding-top: 85px; /* ungefähr die Höhe des Headers */
+        }
 
         .card /* Style von Rezeptekarten*/
         {
@@ -135,56 +232,134 @@
         {
             display: grid; /*definiert grid, inline-grid oder grid*/
             grid-template-columns: 1fr 1fr 1fr 1fr;
-            padding: 10px;
-            grid-gap: 20px;
+            padding: 30px;
+            grid-gap: 30px;
         }
 
 
         /********************* Detailansicht von einem Rezept ****************************/    
 
-
-        .detail /* Style für die Detailansicht*/
-        {
-            border-radius: 10px;
-            aspect-ratio: 2; 
-            /*Quadration aspect-ratio: 1; */
-            background-color: rgb(255, 147, 232);
-            box-shadow: 5px 5px rgb(125, 21, 154);
-
-    
-        }
-
         .detail-grid /*Struktur für die Detailansicht*/
         {
+            border-radius: 10px; /*abgerundete Ecken*/
+            background-color: rgb(255, 147, 232);
+            box-shadow: 5px 5px rgb(125, 21, 154); /*Schatten*/
+
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
+            align-items: start; /* alle Elemente kleben oben */
+            padding: 15px; /* Innere Randabstände */
         }
 
-        .detail img
+        #detail-image /*Struktur für Bild*/
         {
-            grid-row: span 3; /* nimm 3 Reihen ein */
+            grid-column: 3;      /* immer Spalte 3 */
+            grid-row: span 3;    /* über 3 Zeilen */
+            
             justify-self: end; /* innerhalb vom Grid rechtsbündig */
-            box-shadow: 5px 5px rgb(75, 66, 200);
-            width: auto;        /* Bild füllt die Kartenbreite */
-            height: 40%;      /* feste Höhe */
-            object-fit: scale-down;  /* Bild wird zugeschnitten, nicht verzerrt */
+            height: 250px;      /* feste Höhe */
+            width: 100%;        /* Bild füllt die Kartenbreite */
             border-radius: 0px 10px 0px 0px;
-            background-color: rgb(109, 186, 219);
-            object-position: center;
             border: 5px solid rgb(109, 186, 219);
-            margin: 25px;
         }
 
-        .detail img:hover
+        #detail-image img
         {
-            box-shadow: 3px 3px rgb(75, 66, 200);
-            transform: translateY(2px);
+            object-fit: cover;  /* füllt den Container ohne Verzerrung */
+            border-radius: 0px 10px 0px 0px;
+            height: 100%;      /* feste Höhe */
+            width: 100%;        /* Bild füllt die Kartenbreite */
+        }
+        
+
+
+        #detail-ingredients
+        {
+            grid-column: span 2;      /* immer Spalte 3 */
+            grid-row: span 2;    /* über 2 Zeilen */
+
+             /* innerhalb vom Grid rechtsbündig justify-self: end;*/
+            /*object-position: center;*/
+
+            overflow-y: auto; /* Scrollbar wenn zu lang */
         }
 
-        .detail-span-horizontal
+        #detail-title
+        {
+            grid-column: span 2;    /* über 2 Spalten */
+            border-radius: 10px 0px 0px 0px;
+            text-align: left; /* Ausrichtung */
+            height: 40px;
+            display: flex;
+            justify-content: start; /* horizontal linksbündig */
+            align-items: center; /* vertikal zentriert */
+            display: flex;
+        }
+
+        #detail-buttons
+        {
+            grid-column: span 2;    /* über 2 Spalten */  
+            height: 40px;
+        }
+        #detail-buttons-edit
+        {
+            grid-column: span 2;    /* über 2 Spalten */  
+            height: 40px;
+        }
+
+        #detail-link
+        {
+            height: 40px;
+        }
+
+        #detail-description
+        {
+            grid-column: span 2;    /* über 2 Spalten */ 
+            height: 100px;
+            overflow-y: auto; /* Scrollbar wenn zu lang */
+        }
+
+        .scrollable::-webkit-scrollbar {
+            width: 6px; /* schmale Scrollbar */
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: transparent; /* Hintergrund unsichtbar */
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: rgb(125, 21, 154); /* lila Farbe */
+            border-radius: 10px; /* abgerundet */
+        }
+
+        #detail-time
+        { 
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        #detail-instructions
+        {
+            width:700px;
+            max-height: 400px;
+            overflow-y: auto; /* Scrollbar wenn zu lang */
+            grid-row: span 2;
+            
+        }
+
+        #detail-infos
         {
             grid-column: span 2;
+            border-radius: 0px 0px 10px 0px; 
+        }
+        
+        [contenteditable="true"] {
+            border: 2px solid rgb(125, 21, 154);
+            border-radius: 8px;
+            padding: 5px;
+            outline: none; /* entfernt den Standard-Browser-Rahmen */
+            background: rgba(255, 255, 255, 0.3);
         }
 
 
@@ -194,14 +369,34 @@
 
 </head>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
 <body> <!-- alles was der Benutzer sieht -->
 
-    <div id="main"> <!--Hauptseite-->
+    
 
-        <div id="header">
-            <h1>Leslie ist so cute</h1> <!-- Überschrift -->
+    <!---------------------------- Hauptseite ---------------------------->
+    <div id="main"> 
+
+        <!---------------------------- Header ---------------------------->
+        <div id="header" class="blue">
+            <div id="header-main">
+                    <div id="header-left">
+                        <i id="search-icon" class="fa fa-search"></i>
+                    </div>
+                    <div id="header-middle">
+                        <h3>Rezepte</h3>
+                    </div>
+                    <div id="header-right">
+                        <i class="fa fa-bars"></i>
+                    </div>
+            </div>
+            <div id="search-field"class="hidden">
+                <input id="search-value" placeholder="Gib einen Suchbegriff ein...">
+            </div>
         </div>
-
+        
     
         
         <div id="book" class="grid-container"></div> <!-- Container in dem Rezepte gezeigt werden-->
@@ -228,16 +423,41 @@
 
     </div>
 
-    <div id="detail" class="hidden detail detail-grid"> <!-- Detailansicht eines Rezeptes-->
+    <!---------------------------- Detailansicht ---------------------------->
 
-        <h2 id="detail-title"></h2> <!-- Titel -->
-        <img id="detail-image">
-        <p id="detail-total_time"></p>
-        <p id="detail-yields"></p>
-        <p id="detail-ingredients" class="detail-span-horizontal"></p> <!-- Zutaten -->
-        <p id="detail-instructions"class="detail-span-horizontal"></p> <!-- Anweisungen -->
-        <button id="back">Zurück zu den Rezepten</button>    
-           
+    <div id="detail" class="hidden detail-grid"> <!-- Detailansicht eines Rezeptes-->
+        
+        
+
+        <div id="detail-title"class="blue"></div> <!-- Zeile 1 Spalte 1-3 -->
+        <div id="detail-image" class="blue"></div> <!-- Zeile 1-2 Spalte 3 -->
+        <div id="detail-buttons"><!-- Zeile 2 Spalte 1-2 -->
+            <button id="previous">&lt;</button>
+            <button id="back">Rezeptübersicht</button>
+            <button id="next">&gt;</button>
+            <button id="edit">Rezept bearbeiten</button>
+            <button id="open-link">Originalrezept öffnen</button>
+        </div>
+        <div id="detail-buttons-edit" class="hidden"><!-- Zeile 2 Spalte 1-2 -->
+            <button id="save" class="edit-buttons">Rezept speichern</button>
+            <button id="discard" class="edit-buttons">Änderungen verwerfen</button>
+            <button id="delete" class="edit-buttons">Rezept löschen</button>
+        </div>
+
+        <div id="detail-description"class="scrollable"></div> <!-- Zeile 3 Spalte 1-2 -->
+
+        <div id="detail-time" class="blue"></div> <!-- Zeile 4 Spalte 1 -->
+
+        <div id="detail-ingredients"class="blue"></div> <!-- Zeile 4-5 Spalte 2-3 -->
+
+        <div id="detail-instructions"class="scrollable"></div> <!-- Zeile 5-6 Spalte 1 -->
+
+        <div id="detail-infos" class="blue"></div> <!-- Zeile 6 Spalte 2-3 -->
+        
+
+       
+        
+        
     </div>
 
      <!--
@@ -247,6 +467,7 @@
 <button> – ein klickbarer Button
 <input> – ein Eingabefeld
   -->  
+        <!--<button id="back">Zurück zu den Rezepten</button>-->
 
     
 
@@ -254,6 +475,106 @@
     
 
     <script> // Javaskript
+
+        ////////////////////////////////////////////////////////
+        ////////////////// globale Variablen ///////////////////
+        ////////////////////////////////////////////////////////
+
+        let recipes_all = [];
+        let currentIndex = 0;
+        let recipes_search = [];
+
+        ////////////////////////////////////////////////////////
+        /////////////////////// Header /////////////////////////
+        ////////////////////////////////////////////////////////
+
+        //Veränderbarer Header beim Scrollen
+        window.addEventListener("scroll", function() {
+            if (window.scrollY > 30) {
+                document.getElementById("header").classList.add("header-small");
+                if (document.getElementById("search-field").classList.contains("hidden")) {
+                document.getElementById("header").classList.remove("search-mode");
+                }
+                
+            } else {
+                document.getElementById("header").classList.remove("header-small");
+            }
+        });
+
+        //Klicken auf Suchen
+        document.getElementById("header-left").addEventListener("click", function() {
+
+            //Wenn gerade nach unten gescrollt ist, und man auf Suchen drückt, wird nach oben gesprungen
+            if (document.getElementById("header").classList.contains("header-small")
+                && (document.getElementById("search-field").classList.contains("hidden"))
+            ) {
+                window.scrollTo(0, 0)
+                //if (document.getElementById("header").classList.contains("search-mode")) {
+                //    document.getElementById("header").classList.remove("search-mode");
+                //}
+            }
+
+            //Wenn Suchen geschlossen wird und noch ein Begriff drinnen steht den rauslöschen
+            //und alle Rezepte wieder laden
+            if (document.getElementById("search-value").value != "") {
+                
+                //Suchbegriff leeren
+                document.getElementById("search-value").value = "";
+                
+                //Nach oben springen
+                window.scrollTo(0, 0)
+
+                // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
+                document.getElementById("book").innerHTML = ""
+
+                //Rezepte die der Suchanfrage entsprechen anzeigen
+                recipes_all.forEach(loadRecipes); 
+            }
+
+            //Das Suchfeld öffnen und schließen
+            document.getElementById("search-field").classList.toggle("hidden");
+            document.getElementById("header").classList.toggle("search-mode"); //Ecken runden, wenn gesucht wird
+
+            if (document.getElementById("search-icon").classList.contains("fa-search")) {
+                document.getElementById("search-icon").classList.remove("fa-search");
+                document.getElementById("search-icon").classList.add("fa-times");
+            }
+            else
+            {
+                document.getElementById("search-icon").classList.add("fa-search");
+                document.getElementById("search-icon").classList.remove("fa-times");
+            }
+        })
+
+        //Suchanfrage: Nach Namen
+        document.getElementById("search-value").addEventListener("input", function() {
+
+            //Bei jeder Änderung im Suchfeld suchbegriff laden
+            const search_term = document.getElementById("search-value").value;
+
+            recipes_search = []; //leeren
+            for (recipe of recipes_all)
+            {
+                if (recipe.title.toLowerCase().includes(search_term.toLowerCase()))  //Wenn der Rezeptename den suchbegriff beinhaltet ()  
+                {
+                    recipes_search.push(recipe); //Zu den Rezepten die der Suchanfrage entsprechen hinzufügen    
+                }
+            }
+
+
+            // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
+            document.getElementById("book").innerHTML = ""
+
+            //Rezepte die der Suchanfrage entsprechen anzeigen
+            recipes_search.forEach(loadRecipes);    
+
+
+        })
+
+
+        ////////////////////////////////////////////////////////
+        //////////////// allgemeine Funktionen /////////////////
+        ////////////////////////////////////////////////////////
 
         // Die Verbindung mit Supabase herstellen
         const { createClient } = supabase
@@ -264,18 +585,19 @@
         async function updateRecipes(event)
         {   
             // alle rezepte laden
-            const { data: recipes, error } = await db
+            const { data, error } = await db
             .from('recipes')
             .select("*")
             console.log(error)
-            console.log(recipes)
+            console.log(data)
+            recipes_all = data;
             
             // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
             document.getElementById("book").innerHTML = ""
 
             
             //Rezepte anzeigen
-            recipes.forEach(loadRecipes);    
+            recipes_all.forEach(loadRecipes);    
         }
 
         // Rezepte anzeigen
@@ -284,7 +606,7 @@
             // Rezeptkarte erstellen
             const recipe_card = document.createElement("div")
             recipe_card.classList.add("card");
-            recipe_card.addEventListener("click", function() {clickRecipe(recipe_card, recipe)}); // einn rezept anklicken
+            recipe_card.addEventListener("click", function() {clickRecipe(recipes_all.indexOf(recipe))}); // einn rezept anklicken
             document.getElementById("book").appendChild(recipe_card);
 
             //Bild hinzufügen
@@ -310,11 +632,11 @@
         }
 
         //Anklicken eines Rezeptes
-        function clickRecipe(card, recipe)
+        function clickRecipe(index)
         {
             setTimeout(function()
             {
-                detailRecipe(recipe);
+                detailRecipe(index);
                 window.scrollTo(0, 0) // Nach oben scrollen
                 document.getElementById("main").classList.add("hidden");
                 document.getElementById("detail").classList.remove("hidden");
@@ -327,23 +649,165 @@
         //Zurück zu den Rezepten Button
         document.getElementById("back").addEventListener("click", function()
         {
+            //Detailsicht ausblenden, Rezepteübersicht einblenden
             document.getElementById("detail").classList.add("hidden");
             document.getElementById("main").classList.remove("hidden");
+
+            clearDetails() //Detailansicht leeren
+
         });
 
-        //Detail ansicht von einem rezept laden
-        function detailRecipe(recipe)
+        //Das vorherige Rezept anzeigen
+        document.getElementById("previous").addEventListener("click", function()
         {
-            //Rezept laden
-            document.getElementById("detail-title").textContent = recipe.title;
-            document.getElementById("detail-ingredients").textContent = recipe.ingredients;
-            document.getElementById("detail-instructions").textContent = recipe.instructions;
-            document.getElementById("detail-yields").textContent = recipe.yields;
-            document.getElementById("detail-total_time").textContent = recipe.total_time;
-            document.getElementById("detail-image").src = recipe.image || "https://placehold.co/300x200/transparent/transparent";
-            document.getElementById("detail-image").loading = "lazy"; //Laden auf den sichtbaren Bereich (Viewport) zu beschränken
+
+            currentIndex = Math.max(0, currentIndex - 1); //Vorherigen Index aufrufen (mit Grenze)
+            
+            clearDetails() //Detailansicht leeren
+            
+            detailRecipe(currentIndex); //neues Rezept laden
+        });
+
+        //Das nächste Rezept anzeigen
+        document.getElementById("next").addEventListener("click", function()
+        {   
+            currentIndex = Math.min(currentIndex + 1, recipes_all.length - 1); //Nächsten Index aufrufen (mit Grenze)
+            
+            clearDetails() //Detailansicht leeren
+            
+            detailRecipe(currentIndex); //neues Rezept laden
+
+        });
+
+        //Detail ansicht leeren
+        function clearDetails()
+        {
+            document.getElementById("detail-title").innerHTML = "";
+            document.getElementById("detail-image").innerHTML = "";
+            document.getElementById("detail-description").innerHTML = "";
+            document.getElementById("detail-ingredients").innerHTML = "";
+            document.getElementById("detail-time").innerHTML = "";
+            document.getElementById("detail-infos").innerHTML = ""; 
+            document.getElementById("detail-instructions").innerHTML = ""; 
+        }
+
+        //das aktuelle Rezept bearbeiten
+        document.getElementById("edit").addEventListener("click", function()
+        {
+            //Elemente editierbar machen
+            document.getElementById("detail-title").contentEditable = "true";
+            document.getElementById("detail-description").contentEditable = "true";
+            document.getElementById("detail-ingredients").contentEditable = "true";
+            document.getElementById("detail-time").contentEditable = "true";
+            document.getElementById("detail-infos").contentEditable = "true";
+            document.getElementById("detail-instructions").contentEditable = "true";
+
+            //Es fehlt Bild, außerdem Details
+
+            //Schattierungen entfernen
+            document.getElementById("detail-title").classList.remove("blue");
+            document.getElementById("detail-time").classList.remove("blue");
+            document.getElementById("detail-infos").classList.remove("blue");
+            document.getElementById("detail-ingredients").classList.remove("blue");
+
+            //Buttons entfernen und Editbuttons zeigen
+            document.getElementById("detail-buttons").classList.add("hidden");
+            document.getElementById("detail-buttons-edit").classList.remove("hidden");
+
+            //<button id="save">Speichern</button>
+        });
+
+        //Änderungen Verwerfen beim Editieren
+        document.getElementById("discard").addEventListener("click", function()
+        {
+            //Elemente editierbar machen
+            document.getElementById("detail-title").contentEditable = "false";
+            document.getElementById("detail-description").contentEditable = "false";
+            document.getElementById("detail-ingredients").contentEditable = "false";
+            document.getElementById("detail-time").contentEditable = "false";
+            document.getElementById("detail-infos").contentEditable = "false";
+            document.getElementById("detail-instructions").contentEditable = "false";
+
+            //Es fehlt Bild, außerdem Details
+
+            //Schattierungen entfernen
+            document.getElementById("detail-title").classList.add("blue");
+            document.getElementById("detail-time").classList.add("blue");
+            document.getElementById("detail-infos").classList.add("blue");
+            document.getElementById("detail-ingredients").classList.add("blue");
+
+            //Buttons entfernen und Editbuttons zeigen
+            document.getElementById("detail-buttons").classList.remove("hidden");
+            document.getElementById("detail-buttons-edit").classList.add("hidden");
+
+            //<button id="save">Speichern</button>
+            //<button id="discard">Verwerfen</button>
+        });
 
 
+        //Detail ansicht von einem rezept laden
+        function detailRecipe(index)
+        {
+            const recipe = recipes_all[index];
+
+            //Den Index vom Ausgewählten Rezept speichern
+            currentIndex = recipes_all.indexOf(recipe);
+
+            //Titel hinzufügen
+            const title = document.createElement("h2");
+            title.textContent = recipe.title;
+            document.getElementById("detail-title").appendChild(title);
+
+            //Bild hinzufügen
+            const image = document.createElement("img");
+            image.src = recipe.image || "https://placehold.co/300x200/transparent/transparent";
+            image.loading = "lazy"; //Laden auf den sichtbaren Bereich (Viewport) zu beschränken
+            document.getElementById("detail-image").appendChild(image);
+
+            //Beschreibung hinzufügen
+            const description = document.createElement("p");
+            description.textContent = recipe.description;
+            document.getElementById("detail-description").appendChild(description);
+
+            //Informationen über Zutaten
+            //Zutaten
+            const ingredients = document.createElement("p");
+            ingredients.textContent = recipe.ingredients;
+            document.getElementById("detail-ingredients").appendChild(ingredients);
+            //Portionen
+            const yields = document.createElement("p");
+            yields.textContent = recipe.yields;
+            document.getElementById("detail-ingredients").appendChild(yields);
+
+            //Informationen über Anweisungen
+            //Zutaten
+            const instructions = document.createElement("p");
+            instructions.textContent = recipe.instructions;
+            document.getElementById("detail-instructions").appendChild(instructions);
+
+
+            //Informationen über Zeit hinzufügen
+            //Gesamtzeit
+            const total_time = document.createElement("p");
+            total_time.textContent = "Gesamtzeit " + recipe.total_time;
+            document.getElementById("detail-time").appendChild(total_time);
+            //Kochzeit
+            const cook_time = document.createElement("p");
+            cook_time.textContent = "Kochzeit " + recipe.cook_time;
+            document.getElementById("detail-time").appendChild(cook_time);
+            //Vorbereitungszeit
+            const prep_time = document.createElement("p");
+            prep_time.textContent = "Vorbereitungszeit " + recipe.prep_time;
+            document.getElementById("detail-time").appendChild(prep_time);
+
+            //Link hinzufügen
+            document.getElementById("open-link").onclick = () => window.open(recipe.canonical_url, "_blank");
+
+            //Zusätzliche Informationen
+            //Author
+            const author = document.createElement("p");
+            author.textContent = recipe.author;
+            document.getElementById("detail-infos").appendChild(author);
 
         }
 
