@@ -5,31 +5,43 @@
 
     <meta charset="UTF-8"> <!-- welche Zeichen der Browser darstellen soll  -->    
     
-    <title>Rezeptebuch</title> <!-- Titel der beim Tab angezeigt wird-->
+    <title>Rezepte</title> <!-- Titel der beim Tab angezeigt wird-->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- Supabase JavaScript Library benutzen -->
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> <!-- Icon-Liberary -->
+
     <style> /* CSS */
+
+        :root /*Definiere Farben, Schriftart */
+        {
+            --lila: rgb(125, 21, 154);
+            --hellblau: rgb(109, 186, 219);
+            --dunkelblau: rgb(75, 66, 200);
+            --dunkelblau-akzent: rgb(47, 39, 156);
+            --rosa: rgb(255, 147, 232);
+            --hintergrund: rgb(210, 128, 232);
+            --schriftart: "Times New Roman", Times, serif;
+        }
 
         body /* globale Einstellungen */
         {
-            color: rgb(125, 21, 154);
-            font-family: "Times New Roman", Times, serif;
-            background-color: rgb(210, 128, 232)
+            color: var(--lila); /*Schrift-Farbe*/
+            font-family: var(--schriftart); /*Schrift-Art*/
+            background-color: var(--hintergrund) /*Hintergrundsfarbe*/
         }
-
 
         button /* Style des Buttons */
         {
-            background-color:rgb(109, 186, 219);
-            color: rgb(75, 66, 200);
+            background-color: var(--hellblau);
+            color: var(--dunkelblau);
             padding: 10px;
-            box-shadow: 5px 5px rgb(75, 66, 200);
+            box-shadow: 5px 5px  var(--dunkelblau);
             border-radius: 10px;
             border: none;
             cursor: pointer; /* Mauszeiger wird zur Hand beim Hover */
             transition: transform 0.1s, box-shadow 0.1s;
-            font-family: "Times New Roman", Times, serif;
+            font-family: var(--schriftart);
         }
 
         button:active /* Style des Buttons, wenn er gedrückt wird*/
@@ -41,28 +53,29 @@
 
         button:hover
         {
-            box-shadow: 3px 3px rgb(75, 66, 200);
+            box-shadow: 3px 3px var(--dunkelblau);
             transform: translateY(2px);
         }
 
-        .edit-buttons /*Style für Buttons im Editiermodus*/
-        {
-            box-shadow: 5px 5px rgb(125, 21, 154);
-            background: rgba(255, 255, 255, 0.3);  
-            color: rgb(125, 21, 154);
-        }
-
-        .edit-buttons:hover
-        {
-            box-shadow: 3px 3px rgb(125, 21, 154);
-            transform: translateY(2px);
-        }
 
         .hidden /* Klasse von Elementen die versteckt sind*/
         {
             display: none !important;
         }
 
+        .clickable /* Klasse von Elementen, die klickbar sind*/
+        {
+            cursor: pointer;
+        }
+
+        .clickable:active /* Klasse von Elementen, die klickbar sind, in aktivierten Zustand*/
+        {
+            color: var(--dunkelblau-akzent);
+            transform: translateY(1px);
+        }
+
+/*!!!*/
+/********* Modal komplett überarbeiten************/
         .modal-overlay
         {
             position: fixed;      /* bleibt immer im Sichtfeld, auch beim Scrollen */
@@ -86,39 +99,57 @@
             text-align: center;
         }
 
-        .blue
+
+        .blue /*Klasse von Elementen in blauen Boxen*/
         {
-            box-shadow: 5px 5px rgb(75, 66, 200);
-            background-color: rgb(109, 186, 219);
-            color: rgb(75, 66, 200);
+            box-shadow: 5px 5px var(--dunkelblau);
+            background-color: var(--hellblau);
+            color: var(--dunkelblau) !important;
         }
 
         .blue:hover
         {
-            box-shadow: 3px 3px rgb(75, 66, 200);
+            box-shadow: 3px 3px var(--dunkelblau);
             transform: translateY(2px);
         }
 
-        ::placeholder {
-        color: rgb(75, 66, 200);
+        ::placeholder /*Placeholder-Style (Input)*/
+        { 
+        color: var(--dunkelblau);
         opacity: 1; /* Firefox */
-        font-family: "Times New Roman", Times, serif;
+        font-family: var(--schriftart);
         }
 
-        /********************* Header ****************************/  
+        .scrollable::-webkit-scrollbar {
+            width: 6px; /* schmale Scrollbar */
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: transparent; /* Hintergrund unsichtbar */
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: rgb(125, 21, 154); /* lila Farbe */
+            border-radius: 10px; /* abgerundet */
+        }
+
+        /******************************************************************/ 
+        /********************* Header *************************************/  
+        /******************************************************************/
         
-        #header {
+        #header /*Style von Header*/
+        { 
             
             position: fixed;
             z-index: 100;
             top: 10px;
             left: 500px;
             right: 500px;
-            
             transition: padding 0.3s, font-size 0.3s;
         }
 
-        .header-small {
+        .header-small /*reduzierte Form des Headers*/
+        { 
             padding: 0px 5px; 
             font-size: 10px;
         }
@@ -131,21 +162,13 @@
             padding: 0px 20px; /*oben-unten links-rechts*/
         }
 
-        #header-left
-        {
-            cursor: pointer;
-        }
-
-        #header-right
-        {
-            cursor: pointer;
-        }
 
 
         #search-field
         {
-            padding: 10px;
+            
             height: 20px;
+            padding: 0px 10px  5px; /*oben links-rechts unten*/
         }
 
         #search-value
@@ -156,10 +179,15 @@
             
             background: transparent;
             border-radius: 10px 10px 10px 10px; 
-            color:rgb(75, 66, 200);
+            color:rgb(125, 21, 154);
             border: 2px solid rgb(75, 66, 200);
             font-size: 14px;
             text-indent: 5px;
+        }
+
+        #search-value:focus {
+        border-color: rgb(125, 21, 154);
+        outline: none;
         }
 
 
@@ -167,6 +195,15 @@
         {
             border-radius: 0px 0px 10px 10px;    
         }
+
+        #menu-book, #menu-detail, #menu-edit
+        {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* links, mitte, rechts */
+            padding: 0px 20px  5px; /*oben links-rechts unten*/
+        }
+        
 
 
         /********************* Hauptansicht: Rezepte übersicht ****************************/ 
@@ -237,130 +274,26 @@
         }
 
 
-        /********************* Detailansicht von einem Rezept ****************************/    
-
-        .detail-grid /*Struktur für die Detailansicht*/
-        {
-            border-radius: 10px; /*abgerundete Ecken*/
-            background-color: rgb(255, 147, 232);
-            box-shadow: 5px 5px rgb(125, 21, 154); /*Schatten*/
-
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            align-items: start; /* alle Elemente kleben oben */
-            padding: 15px; /* Innere Randabstände */
-        }
-
-        #detail-image /*Struktur für Bild*/
-        {
-            grid-column: 3;      /* immer Spalte 3 */
-            grid-row: span 3;    /* über 3 Zeilen */
-            
-            justify-self: end; /* innerhalb vom Grid rechtsbündig */
-            height: 250px;      /* feste Höhe */
-            width: 100%;        /* Bild füllt die Kartenbreite */
-            border-radius: 0px 10px 0px 0px;
-            border: 5px solid rgb(109, 186, 219);
-        }
-
-        #detail-image img
-        {
-            object-fit: cover;  /* füllt den Container ohne Verzerrung */
-            border-radius: 0px 10px 0px 0px;
-            height: 100%;      /* feste Höhe */
-            width: 100%;        /* Bild füllt die Kartenbreite */
-        }
+        /********************* Detailansicht von einem Rezept ****************************/ 
         
 
 
-        #detail-ingredients
+        /*#detail-image img
         {
-            grid-column: span 2;      /* immer Spalte 3 */
-            grid-row: span 2;    /* über 2 Zeilen */
+            object-fit: cover;  
+            border-radius: 0px 10px 0px 0px;
+            height: 100%;      
+            width: 100%;        
+        }*/
 
-             /* innerhalb vom Grid rechtsbündig justify-self: end;*/
-            /*object-position: center;*/
-
-            overflow-y: auto; /* Scrollbar wenn zu lang */
-        }
-
-        #detail-title
-        {
-            grid-column: span 2;    /* über 2 Spalten */
-            border-radius: 10px 0px 0px 0px;
-            text-align: left; /* Ausrichtung */
-            height: 40px;
-            display: flex;
-            justify-content: start; /* horizontal linksbündig */
-            align-items: center; /* vertikal zentriert */
-            display: flex;
-        }
-
-        #detail-buttons
-        {
-            grid-column: span 2;    /* über 2 Spalten */  
-            height: 40px;
-        }
-        #detail-buttons-edit
-        {
-            grid-column: span 2;    /* über 2 Spalten */  
-            height: 40px;
-        }
-
-        #detail-link
-        {
-            height: 40px;
-        }
-
-        #detail-description
-        {
-            grid-column: span 2;    /* über 2 Spalten */ 
-            height: 100px;
-            overflow-y: auto; /* Scrollbar wenn zu lang */
-        }
-
-        .scrollable::-webkit-scrollbar {
-            width: 6px; /* schmale Scrollbar */
-        }
-
-        .scrollable::-webkit-scrollbar-track {
-            background: transparent; /* Hintergrund unsichtbar */
-        }
-
-        .scrollable::-webkit-scrollbar-thumb {
-            background: rgb(125, 21, 154); /* lila Farbe */
-            border-radius: 10px; /* abgerundet */
-        }
-
-        #detail-time
-        { 
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        #detail-instructions
-        {
-            width:700px;
-            max-height: 400px;
-            overflow-y: auto; /* Scrollbar wenn zu lang */
-            grid-row: span 2;
-            
-        }
-
-        #detail-infos
-        {
-            grid-column: span 2;
-            border-radius: 0px 0px 10px 0px; 
-        }
         
-        [contenteditable="true"] {
+        /*[contenteditable="true"] {
             border: 2px solid rgb(125, 21, 154);
             border-radius: 8px;
             padding: 5px;
-            outline: none; /* entfernt den Standard-Browser-Rahmen */
+            outline: none;
             background: rgba(255, 255, 255, 0.3);
-        }
+        }*/
 
 
 /**/
@@ -369,49 +302,179 @@
 
 </head>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 
 <body> <!-- alles was der Benutzer sieht -->
 
-    
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Header ------------------------------------------------------>
+<!------------------------------------------------------------------------------------------>
 
-    <!---------------------------- Hauptseite ---------------------------->
-    <div id="main"> 
+    <div id="header" class="blue">
 
-        <!---------------------------- Header ---------------------------->
-        <div id="header" class="blue">
-            <div id="header-main">
-                    <div id="header-left">
-                        <i id="search-icon" class="fa fa-search"></i>
-                    </div>
-                    <div id="header-middle">
-                        <h3>Rezepte</h3>
-                    </div>
-                    <div id="header-right">
-                        <i class="fa fa-bars"></i>
-                    </div>
+        <!------ oberer Teil des Headers ------------->
+        <div id="header-main">
+                <div id="header-left">
+                    <i id="search-icon" class="fa fa-search clickable"></i>
+                </div>
+                <div id="header-middle">
+                    <h3 id="header-title">Rezepte</h3>
+                </div>
+                <div id="header-right">
+                    <i id="menu-icon"class="fa fa-bars clickable"></i>
+                </div>
+        </div>
+
+        <!------ unterer Teil des Headers ------------>
+        <!------ Suchfeld ------>
+        <div id="search-field"class="hidden">
+            <input id="search-value" placeholder="Gib einen Suchbegriff ein...">
+        </div>
+        <!-------- Menu -------->
+        <div id="menu"class="hidden">
+            <!--- Menu: Rezepteübersicht --->
+            <div id="menu-book">
+                <div id="menu-left">
+                    <i id="to-new-recipe" class="fa fa-plus clickable"></i>
+                </div>
+                <div id="menu-middle">
+                    <i id="back-to-top" class="fa fa-chevron-up clickable"></i>
+                </div>
+                <div id="menu-right">
+                    <i id="to-shopping-list" class="fa fa-shopping-basket clickable"></i>
+                </div>
             </div>
-            <div id="search-field"class="hidden">
-                <input id="search-value" placeholder="Gib einen Suchbegriff ein...">
+            <!--- Menu: Detailansicht --->
+            <div id="menu-detail"class="hidden">
+                <div>
+                    <i id="previous" class="fa fa-chevron-left clickable"></i> 
+                </div>
+                <div>
+                    <i id="back-to-recipes" class="fa fa-book clickable"></i>
+                </div>
+                <div>
+                    <i id="next" class="fa fa-chevron-right clickable"></i>
+                </div>
+                <div>
+                    <i id="edit" class="fa fa-pencil clickable"></i>
+                </div>
+                <div>
+                    <i id="external-link" class="fa fa-external-link clickable"></i>
+                </div>
+                <div>
+                    <i id="to-shopping-list-detail" class="fa fa-shopping-basket clickable"></i>
+                </div>
+            </div>
+            <!--- Menu: Bearbeitungsansicht --->
+            <div id="menu-edit"class="hidden">
+                <div>
+                    <i id="save" class="fa fa-check clickable"></i> 
+                </div>
+                <div>
+                    <i id="undo" class="fa fa-undo clickable"></i> 
+                </div>
+                <div>
+                    <i id="delete" class="fa fa-trash clickable"></i> 
+                </div>
             </div>
         </div>
-        
-    
+    </div>
+
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Hauptbereich ------------------------------------------------>
+<!------------------------------------------------------------------------------------------>   
+
+    <div id="main"> 
+
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Rezepteübersicht -------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
         
         <div id="book" class="grid-container"></div> <!-- Container in dem Rezepte gezeigt werden-->
 
-        <div id="add-recipes">
-            <button id="add-recipe">Neues Rezept hinzufügen</button> <!-- Rezept hinzufügen button-->
-            <div id="recipe-input" class="hidden"> <!-- Container für den Rezeptinput-->
-                    <input id="title" placeholder="Rezeptname eingeben"> <!-- Eingabe von Titel, selbstschließender Tag-->
-                    <textarea id="ingredients" placeholder="Zutaten eingeben"></textarea> <!--Eingabe von Zutaten-->
-                    <textarea id="instructions" placeholder="Anweisungen eingeben"></textarea> <!--Eingabe von Beschreibung-->
-                    <button id="confirm">Rezeptinformationen speichern</button>
-                    <button id="saveDraft">Entwurf speichern</button>
-                    <button id="cancel">Abbrechen</button>
-            </div>
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Detailansicht ----------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
+        
+        <div id="detail-area" class="hidden">
+
+            <div id="detail-title"></div>
+            <div id="detail-url"></div>
+            <div id="detail-image"></div>
+            <div id="detail-description"></div>
+            <div id="detail-ingredients"></div>
+            <div id="detail-yields"></div>
+            <div id="detail-instructions"></div>
+            <div id="detail-time"></div>
+            <div id="detail-category"></div>
+            <div id="detail-notes"></div>
+            <div id="detail-created"></div>
+            <div id="detail-changed"></div>
+
         </div>
+
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Bearbeitungsmodus ------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
+        <div id="edit-area" class="hidden">
+
+            <div id="edit-title">
+                <p>Titel:</p>
+                <input id="edit-title-input">
+            </div>
+            <div id="edit-url">
+                <p>URL:</p>
+                <input id="edit-url-input">
+            </div>
+            <div id="edit-image">
+                <p>Bild:</p>
+                <input id="edit-image-input">
+            </div>
+            <div id="edit-description">
+                <p>Beschreibung:</p>
+                <input id="edit-description-input">
+            </div>
+            <div id="edit-ingredients">
+                <p>Zutaten:</p>
+                <input id="edit-ingredients-input">
+            </div>
+            <div id="edit-yields">
+                <p>Portionen:</p>
+                <input id="edit-yields-input">
+            </div>
+            <div id="edit-instructions">
+                <p>Anweisungen:</p>
+                <input id="edit-instructions-input">
+            </div>
+            <div id="edit-time">
+                <p>Zeit:</p>
+                <input id="edit-time-input">
+            </div>
+            <div id="edit-category">
+                <p>Kategorien:</p>
+                <input id="edit-category-input">
+            </div>
+            <div id="edit-notes">
+                <p>weitere Infos:</p>
+                <input id="edit-notes-input">
+            </div>
+            <div id="edit-created">
+                <p>Erstellt am:</p>
+                <input id="edit-created-input">
+            </div>
+            <div id="edit-changed">
+                <p>Geändert am:</p>
+                <input id="edit-changed-input">
+            </div>
+
+        </div>
+
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Overlay ----------------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
 
         <div id="confirm-modal" class="modal-overlay hidden">
             <div class="modal">
@@ -422,107 +485,68 @@
         </div>
 
     </div>
-
-    <!---------------------------- Detailansicht ---------------------------->
-
-    <div id="detail" class="hidden detail-grid"> <!-- Detailansicht eines Rezeptes-->
-        
-        
-
-        <div id="detail-title"class="blue"></div> <!-- Zeile 1 Spalte 1-3 -->
-        <div id="detail-image" class="blue"></div> <!-- Zeile 1-2 Spalte 3 -->
-        <div id="detail-buttons"><!-- Zeile 2 Spalte 1-2 -->
-            <button id="previous">&lt;</button>
-            <button id="back">Rezeptübersicht</button>
-            <button id="next">&gt;</button>
-            <button id="edit">Rezept bearbeiten</button>
-            <button id="open-link">Originalrezept öffnen</button>
-        </div>
-        <div id="detail-buttons-edit" class="hidden"><!-- Zeile 2 Spalte 1-2 -->
-            <button id="save" class="edit-buttons">Rezept speichern</button>
-            <button id="discard" class="edit-buttons">Änderungen verwerfen</button>
-            <button id="delete" class="edit-buttons">Rezept löschen</button>
-        </div>
-
-        <div id="detail-description"class="scrollable"></div> <!-- Zeile 3 Spalte 1-2 -->
-
-        <div id="detail-time" class="blue"></div> <!-- Zeile 4 Spalte 1 -->
-
-        <div id="detail-ingredients"class="blue"></div> <!-- Zeile 4-5 Spalte 2-3 -->
-
-        <div id="detail-instructions"class="scrollable"></div> <!-- Zeile 5-6 Spalte 1 -->
-
-        <div id="detail-infos" class="blue"></div> <!-- Zeile 6 Spalte 2-3 -->
-        
-
-       
-        
-        
-    </div>
-
-     <!--
-<h1> bis <h6> – Überschriften (h1 = groß, h6 = klein)
-<p> – ein Textabsatz
-<div> – ein unsichtbarer Container zum Gruppieren von Elementen
-<button> – ein klickbarer Button
-<input> – ein Eingabefeld
-  -->  
-        <!--<button id="back">Zurück zu den Rezepten</button>-->
-
-    
-
-
     
 
     <script> // Javaskript
 
-        ////////////////////////////////////////////////////////
-        ////////////////// globale Variablen ///////////////////
-        ////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////// globale Variablen ///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let recipes_all = [];
-        let currentIndex = 0;
-        let recipes_search = [];
+        let recipes_all = []; // alle Rezepte
+        let currentIndex = 0; // Der Index von recipe_all des ausgewählten Rezeptes
+        let recipes_search = []; // alle Rezepte, die einem Suchkriterium entsprechen
+        let isNew = false; //Rezept ist neu
 
-        ////////////////////////////////////////////////////////
-        /////////////////////// Header /////////////////////////
-        ////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Header /////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //Veränderbarer Header beim Scrollen
+        /**
+         * Verkleinert den Header, beim Scrollen nach unten.
+         */
         window.addEventListener("scroll", function() {
-            if (window.scrollY > 30) {
-                document.getElementById("header").classList.add("header-small");
-                if (document.getElementById("search-field").classList.contains("hidden")) {
-                document.getElementById("header").classList.remove("search-mode");
-                }
-                
-            } else {
+
+            //Wenn runter gescrollt wird, mache eine kleine Version des Headers
+            if (window.scrollY > 30)
+            {
+                document.getElementById("header").classList.add("header-small");    
+            }
+            else
+            {
                 document.getElementById("header").classList.remove("header-small");
             }
-        });
+        })
 
-        //Klicken auf Suchen
+
+        ////////////// Suchen /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Alles was passiert, wenn auf das Suchicon im Header geklickt wird.
+         */
         document.getElementById("header-left").addEventListener("click", function() {
 
-            //Wenn gerade nach unten gescrollt ist, und man auf Suchen drückt, wird nach oben gesprungen
+            // Nach oben Springen, wenn die  neuSuche aktiviert wird
             if (document.getElementById("header").classList.contains("header-small")
                 && (document.getElementById("search-field").classList.contains("hidden"))
             ) {
-                window.scrollTo(0, 0)
-                //if (document.getElementById("header").classList.contains("search-mode")) {
-                //    document.getElementById("header").classList.remove("search-mode");
-                //}
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             }
 
-            //Wenn Suchen geschlossen wird und noch ein Begriff drinnen steht den rauslöschen
-            //und alle Rezepte wieder laden
+            //Schließen der Suche -> Suchfeld zurücksetzen, alle Rezepte laden
             if (document.getElementById("search-value").value != "") {
                 
                 //Suchbegriff leeren
                 document.getElementById("search-value").value = "";
                 
                 //Nach oben springen
-                window.scrollTo(0, 0)
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
 
                 // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
                 document.getElementById("book").innerHTML = ""
@@ -531,29 +555,39 @@
                 recipes_all.forEach(loadRecipes); 
             }
 
-            //Das Suchfeld öffnen und schließen
-            document.getElementById("search-field").classList.toggle("hidden");
-            document.getElementById("header").classList.toggle("search-mode"); //Ecken runden, wenn gesucht wird
+            //Menu schließen, wenn es gerade geöffnet ist -> immer nur eins von beiden Offen
+            if (!(document.getElementById("menu").classList.contains("hidden"))) 
+            {
+                closeMenu();
+            }
 
-            if (document.getElementById("search-icon").classList.contains("fa-search")) {
-                document.getElementById("search-icon").classList.remove("fa-search");
-                document.getElementById("search-icon").classList.add("fa-times");
+            //Das Suchfeld öffnen und schließen
+            if (document.getElementById("search-field").classList.contains("hidden"))
+            {
+                openSearch()
             }
             else
             {
-                document.getElementById("search-icon").classList.add("fa-search");
-                document.getElementById("search-icon").classList.remove("fa-times");
+                closeSearch()
             }
+
+            //Automatisch ins Suchfeld fokussieren
+            document.getElementById('search-value').focus();
         })
 
-        //Suchanfrage: Nach Namen
+        /**
+         * Überprüft, ob ein Suchbegriff in den Titeln der Rezepte vorhanden ist,
+         * und updated die Übersicht der Rezepte nach diesem Kriterium.
+         */
         document.getElementById("search-value").addEventListener("input", function() {
 
             //Bei jeder Änderung im Suchfeld suchbegriff laden
             const search_term = document.getElementById("search-value").value;
 
             recipes_search = []; //leeren
-            for (recipe of recipes_all)
+
+            //Durch alle Rezepte iterieren und überprüfen ob Suchwort im Titel enthalten ist
+            for (const recipe of recipes_all)
             {
                 if (recipe.title.toLowerCase().includes(search_term.toLowerCase()))  //Wenn der Rezeptename den suchbegriff beinhaltet ()  
                 {
@@ -561,46 +595,315 @@
                 }
             }
 
-
             // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
             document.getElementById("book").innerHTML = ""
 
             //Rezepte die der Suchanfrage entsprechen anzeigen
             recipes_search.forEach(loadRecipes);    
-
-
         })
 
 
-        ////////////////////////////////////////////////////////
-        //////////////// allgemeine Funktionen /////////////////
-        ////////////////////////////////////////////////////////
+        /**
+         * Öffne das Suchfeld.
+         */
+        function openSearch()
+        {
+            document.getElementById("search-field").classList.remove("hidden");
+            document.getElementById("header").classList.add("search-mode");
+            document.getElementById("search-icon").classList.add("fa-times");
+            document.getElementById("search-icon").classList.remove("fa-search");
+        }
 
-        // Die Verbindung mit Supabase herstellen
+        /**
+         * Schließe das Suchfeld.
+         */
+        function closeSearch()
+        {
+            document.getElementById("search-field").classList.add("hidden");
+            document.getElementById("header").classList.remove("search-mode");
+            document.getElementById("search-icon").classList.remove("fa-times");
+            document.getElementById("search-icon").classList.add("fa-search");
+                
+            
+        }
+
+        ////////////// Menu /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Alles was passiert, wenn auf das Menu-Icon im Header geklickt wird,
+         */
+        document.getElementById("header-right").addEventListener("click", function() {
+
+            //Wenn das Suchfeld offen ist, dieses schließen
+            if (!(document.getElementById("search-field").classList.contains("hidden"))) 
+            {
+                closeSearch();
+            }
+
+            //Das Menu öffnen und Schließen
+            if (document.getElementById("menu").classList.contains("hidden")) 
+            {
+                openMenu();
+            }
+            else
+            {
+                closeMenu();
+            }
+
+        })
+
+        
+        /**
+         * Das Menu öffnen.
+         */
+        function openMenu()
+        {   
+            document.getElementById("menu").classList.remove("hidden");
+            document.getElementById("header").classList.add("search-mode");
+            document.getElementById("menu-icon").classList.add("fa-times");
+            document.getElementById("menu-icon").classList.remove("fa-bars");
+        }
+        
+        /**
+         * Das Menu schließen.
+         */
+        function closeMenu()
+        {   
+            document.getElementById("menu").classList.add("hidden");
+            document.getElementById("header").classList.remove("search-mode");
+            document.getElementById("menu-icon").classList.remove("fa-times");
+            document.getElementById("menu-icon").classList.add("fa-bars");
+        }
+
+        ///////// Menu-Icons ///////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Klicken des Menu-Icons: Ein neues Rezept hinzufügen.
+         */
+        document.getElementById("to-new-recipe").addEventListener("click", function()
+        {   
+            //Ändere die Überschrift
+            document.getElementById("header-title").textContent = "neues Rezept erstellen";
+
+            isNew = true;
+
+            bookToEdit();
+        })
+        
+        
+        /**
+         * Klicken des Menu-Icons: Zurück nach oben.
+         */
+        document.getElementById("back-to-top").addEventListener("click", function()
+        {   
+            //Menu schließen
+            closeMenu();
+            
+            //Nach oben scrollen
+            window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+        })
+        
+        /**
+         * Klicken des Menu-Icons: Zur Shoppingliste.
+         */
+        document.getElementById("to-shopping-list").addEventListener("click", function()
+        {   
+            alert("In Arbeit.");
+        })
+
+        ///////// Detail-Menu-Items ///////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Klicken von <: Vorheriges Rezept anzeigen.
+         */
+        document.getElementById("previous").addEventListener("click", function()
+        {   
+            //Den Index auf den Vorherigen setzen (Grenzen werden beachtet)
+            currentIndex = Math.max(0, currentIndex - 1); //Vorherigen Index aufrufen (mit Grenze)
+            
+            //Detailansicht leeren
+            clearDetails() 
+            
+            //Detailansicht des neuen Rezeptes laden
+            detailRecipe(currentIndex);
+        })
+
+        /**
+         * Klicken von Buch-Icon: Zurück zur Rezepteübersicht.
+         */
+        document.getElementById("back-to-recipes").addEventListener("click", function()
+        {   
+            detailToRecipes();
+        })
+
+        /**
+         * Klicken von >: Nächstes Rezept anzeigen.
+         */
+        document.getElementById("next").addEventListener("click", function()
+        {   
+            //Den Index auf den Nächsten setzen (Grenzen werden beachtet)
+            currentIndex = Math.min(currentIndex + 1, recipes_all.length - 1);
+            
+            //Detailansicht leeren
+            clearDetails() 
+            
+            //Detailansicht des neuen Rezeptes laden
+            detailRecipe(currentIndex);
+        })
+
+        /**
+         * Klicken von edit-Icon: Das aktuelle Rezept editieren.
+         */
+        document.getElementById("edit").addEventListener("click", function()
+        {   
+        
+
+            //Ändere die Überschrift
+            document.getElementById("header-title").textContent = "Rezept bearbeiten";
+
+            //öffne den Edit-Mode
+            openEditMode();
+
+            //Lade das aktuelle Rezept in den Edit-Mode
+            loadRecipeToEditMode(currentIndex);
+
+            
+        })
+
+        /**
+         * Klicken von Link-Icon: Den externen Link öffnen.
+         */
+        document.getElementById("external-link").addEventListener("click", function()
+        {   
+            //pass (wird in detailRecipes() angehangen)
+        })
+
+        /**
+         * Klicken von EInkaufs-Icon: Die Einkaufsliste öffnen.
+         */
+        document.getElementById("to-shopping-list-detail").addEventListener("click", function()
+        {   
+            alert("In Arbeit.");
+        })
+
+
+        ///////// Edit-Menu-Items ///////////////////////////////////////////////////////////////////////////////////
+
+//!!!
+//Hier brauche ich noch Fenster die abfragen ob man wirklich löschen möchte
+
+        /**
+         * Klicken Rezept-Speichern buttons,
+         * Das Rezept wird gespeichert, also auch so in die Datenbank geschrieben,
+         * es wird zurück zur Detailansicht navigiert
+         */
+        document.getElementById("save").addEventListener("click", function()
+        {   
+            //Rezept speichern
+            saveRecipe();
+            
+            //Schließe den Editiermodus
+            closeEditMode();
+            
+        })
+
+        /**
+         * Klicken von Discard-Icon: Die Änderungen verwerfen und wieder aus dem Editiermodus rausgehen. save undo delete
+         */
+        document.getElementById("undo").addEventListener("click", function()
+        {   
+            //Wenn ein neues Rezept erstellt wurde und Undo gemacht werden soll
+            if (isNew)
+            {
+                //Variable zurücksetzen
+                isNew = false;    
+                //Rezepteübersicht öffnen
+                document.getElementById("book").classList.remove("hidden");    
+                //Editieransicht schließen
+                document.getElementById("edit-area").classList.add("hidden");
+
+                //Schließe das Edit-Header-Menu
+                document.getElementById("menu-edit").classList.add("hidden");
+
+                //Füge den Menu-Schließe-Button, wieder hinzu
+                document.getElementById("menu-icon").classList.remove("hidden");
+                document.getElementById("menu-book").classList.remove("hidden");
+
+                //Menu schließen
+                closeMenu();
+
+                //Edit felder leeren
+                emptyEditMode();
+
+                //Ändere die Überschrift
+                document.getElementById("header-title").textContent = "Rezepte";
+            }
+            //Wenn ein Rezept editiert wurde und undo gemacht werden soll
+            else
+            {
+                //Schließe den Editiermodus
+                closeEditMode();
+            }
+            
+            
+        })
+
+        /**
+         * Klicken des Rezept-Löschensbuttons
+         */
+        document.getElementById("delete").addEventListener("click", function()
+        {  
+           alert("In Arbeit"); 
+        })
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////// allgemeine Funktionen /////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Verbindung mit Supabase herstellen.
+         */
         const { createClient } = supabase
         const db = createClient('https://uljwzbmfeywdenmwfgwl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsand6Ym1mZXl3ZGVubXdmZ3dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDI0MDksImV4cCI6MjA5MzM3ODQwOX0.PnwrRKOBCH7k2Jqr37xY-r0RTpmaseZvLdlm_QLkv_E')
         console.log(db)
 
-        // lokale Rezeptedaten mit der Database aktualisieren und anzeigen
+        /**
+         * Die Rezepte aus der Database runterladen und in globaler Variable speichern.
+         * Dann die Rezepte anzeigen mit loadRecipes()-Funktion.
+         */
         async function updateRecipes(event)
         {   
             // alle rezepte laden
             const { data, error } = await db
-            .from('recipes')
-            .select("*")
-            console.log(error)
-            console.log(data)
+                .from('recipes')
+                .select("*")
+                .order('title', { ascending: true }) // alphabetisch nach Titel
+ 
             recipes_all = data;
             
             // Den Container einmal leeren, damit die Rezepte nicht doppelt angezeigt wernden
             document.getElementById("book").innerHTML = ""
-
             
             //Rezepte anzeigen
             recipes_all.forEach(loadRecipes);    
         }
 
-        // Rezepte anzeigen
+        // Rezepte aus der Datenbank laden und anzeigen, wenn die Seite neu gestartet wird
+        document.addEventListener('DOMContentLoaded', updateRecipes);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////// Funktionen auf der Rezepte-Übersicht /////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        /**
+         * Rezepte als Karten anzeigen.
+         * Nur Bild und Titel.
+         */
         function loadRecipes(recipe)
         {
             // Rezeptkarte erstellen
@@ -618,7 +921,7 @@
 
             //Titel hinzufügen
             const card_title = document.createElement("h2");
-            if (recipe.title.length > 25)
+            if ((recipe.title || "").length > 25)
             {
                 card_title.textContent = recipe.title.slice(0, 22) + "..." ;
                 card_title.dataset.tooltip = recipe.title //damit der ganze Titel angezeigt wird wenn man drauf bleibt
@@ -631,245 +934,403 @@
 
         }
 
-        //Anklicken eines Rezeptes
+        /**
+         * Alles was passiert, wenn man eine Rezepte-Karte anklickt.
+         * Eine kleine Verzögerung, damit das Klick-Feedback sichtbar ist
+         * @param index - Der Index des Angeklickten Rezeptes
+         */
         function clickRecipe(index)
-        {
+        {   
+            //Zeitliche Verzögerung
             setTimeout(function()
-            {
+            {   
+                //Die Detailansicht des Rezeptes Laden über den Index
                 detailRecipe(index);
-                window.scrollTo(0, 0) // Nach oben scrollen
-                document.getElementById("main").classList.add("hidden");
-                document.getElementById("detail").classList.remove("hidden");
+                
+                //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
+                window.scrollTo(0, 0)
+
+                //Rezepteansicht schließen
+                document.getElementById("book").classList.add("hidden");
+
+                //Wenn die Detailansicht aufgerufen wird, soll das Suchicon ausgeblendet werden
+                document.getElementById("search-icon").classList.add("hidden");
+
+                //Die Icons der Menuleiste im header ändern
+                document.getElementById("menu-book").classList.add("hidden");
+                document.getElementById("menu-detail").classList.remove("hidden");
+                
+                //Suchfeld geöffnet -> Schließen
+                if (!(document.getElementById("search-field").classList.contains("hidden"))) 
+                {
+                    closeSearch();
+                    
+                }
+
+                //Menu geöffnet -> Schließen
+                if (!(document.getElementById("menu").classList.contains("hidden"))) 
+                {
+                    closeMenu();
+                }
+
+                //Detailansicht öffnen
+                document.getElementById("detail-area").classList.remove("hidden");
+
             }, 200)
+        }
             
-            
+        function bookToEdit()
+        {                   
+                //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
+                window.scrollTo(0, 0)
+
+                //Editansicht öffnen
+                openEditMode()
+
+                //Wenn die Detailansicht aufgerufen wird, soll das Suchicon ausgeblendet werden
+                document.getElementById("search-icon").classList.add("hidden");
+
+                
+                //Suchfeld geöffnet -> Schließen
+                if (!(document.getElementById("search-field").classList.contains("hidden"))) 
+                {
+                    closeSearch();
+                    
+                }
+
+        }
+   
+        
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////// Funktionen, in der Detailübersicht /////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        /**
+         * Die Detailansicht schließen und die Rezepteübersicht öffnen.
+         */
+        function detailToRecipes()
+        {
+            //Detailsicht ausblenden und leeren
+            document.getElementById("detail-area").classList.add("hidden");
+            clearDetails()
+            //Rezepteübersicht einblenden
+            document.getElementById("book").classList.remove("hidden");
+
+            //Suchicon im Header wieder einblenden
+            document.getElementById("search-icon").classList.remove("hidden");
+
+            //Die Icons der Menuleiste im header ändern
+            document.getElementById("menu-detail").classList.add("hidden");
+            document.getElementById("menu-book").classList.remove("hidden");
+
+            //Menu einklappen
+            closeMenu();
+
+            //Wenn die Suche noch aktiv ist, wieder in den Suchmodus:
+            if (document.getElementById("search-value").value != "")
+            {
+                openSearch();    
+            }    
+
+            //den Titel des Headers wieder verallgemeinern
+            document.getElementById("header-title").textContent = "Rezepte";
         }
 
 
-        //Zurück zu den Rezepten Button
-        document.getElementById("back").addEventListener("click", function()
-        {
-            //Detailsicht ausblenden, Rezepteübersicht einblenden
-            document.getElementById("detail").classList.add("hidden");
-            document.getElementById("main").classList.remove("hidden");
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//Überlegung: Hier könnte man es auch so machen, wenn man im Suchmodus ist, dann
+//wird nur durch die gefilterten Rezepte geblättert
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-            clearDetails() //Detailansicht leeren
 
-        });
 
-        //Das vorherige Rezept anzeigen
-        document.getElementById("previous").addEventListener("click", function()
-        {
-
-            currentIndex = Math.max(0, currentIndex - 1); //Vorherigen Index aufrufen (mit Grenze)
-            
-            clearDetails() //Detailansicht leeren
-            
-            detailRecipe(currentIndex); //neues Rezept laden
-        });
-
-        //Das nächste Rezept anzeigen
-        document.getElementById("next").addEventListener("click", function()
-        {   
-            currentIndex = Math.min(currentIndex + 1, recipes_all.length - 1); //Nächsten Index aufrufen (mit Grenze)
-            
-            clearDetails() //Detailansicht leeren
-            
-            detailRecipe(currentIndex); //neues Rezept laden
-
-        });
-
-        //Detail ansicht leeren
+        /**
+         * Die Detailansicht leeren.
+         */
         function clearDetails()
         {
             document.getElementById("detail-title").innerHTML = "";
+            document.getElementById("detail-url").innerHTML = "";
             document.getElementById("detail-image").innerHTML = "";
             document.getElementById("detail-description").innerHTML = "";
             document.getElementById("detail-ingredients").innerHTML = "";
-            document.getElementById("detail-time").innerHTML = "";
-            document.getElementById("detail-infos").innerHTML = ""; 
+            document.getElementById("detail-yields").innerHTML = ""; 
             document.getElementById("detail-instructions").innerHTML = ""; 
+            document.getElementById("detail-time").innerHTML = "";
+            document.getElementById("detail-category").innerHTML = "";
+            document.getElementById("detail-notes").innerHTML = "";
+            document.getElementById("detail-created").innerHTML = "";
+            document.getElementById("detail-changed").innerHTML = "";
+
         }
 
-        //das aktuelle Rezept bearbeiten
-        document.getElementById("edit").addEventListener("click", function()
-        {
-            //Elemente editierbar machen
-            document.getElementById("detail-title").contentEditable = "true";
-            document.getElementById("detail-description").contentEditable = "true";
-            document.getElementById("detail-ingredients").contentEditable = "true";
-            document.getElementById("detail-time").contentEditable = "true";
-            document.getElementById("detail-infos").contentEditable = "true";
-            document.getElementById("detail-instructions").contentEditable = "true";
 
-            //Es fehlt Bild, außerdem Details
-
-            //Schattierungen entfernen
-            document.getElementById("detail-title").classList.remove("blue");
-            document.getElementById("detail-time").classList.remove("blue");
-            document.getElementById("detail-infos").classList.remove("blue");
-            document.getElementById("detail-ingredients").classList.remove("blue");
-
-            //Buttons entfernen und Editbuttons zeigen
-            document.getElementById("detail-buttons").classList.add("hidden");
-            document.getElementById("detail-buttons-edit").classList.remove("hidden");
-
-            //<button id="save">Speichern</button>
-        });
-
-        //Änderungen Verwerfen beim Editieren
-        document.getElementById("discard").addEventListener("click", function()
-        {
-            //Elemente editierbar machen
-            document.getElementById("detail-title").contentEditable = "false";
-            document.getElementById("detail-description").contentEditable = "false";
-            document.getElementById("detail-ingredients").contentEditable = "false";
-            document.getElementById("detail-time").contentEditable = "false";
-            document.getElementById("detail-infos").contentEditable = "false";
-            document.getElementById("detail-instructions").contentEditable = "false";
-
-            //Es fehlt Bild, außerdem Details
-
-            //Schattierungen entfernen
-            document.getElementById("detail-title").classList.add("blue");
-            document.getElementById("detail-time").classList.add("blue");
-            document.getElementById("detail-infos").classList.add("blue");
-            document.getElementById("detail-ingredients").classList.add("blue");
-
-            //Buttons entfernen und Editbuttons zeigen
-            document.getElementById("detail-buttons").classList.remove("hidden");
-            document.getElementById("detail-buttons-edit").classList.add("hidden");
-
-            //<button id="save">Speichern</button>
-            //<button id="discard">Verwerfen</button>
-        });
-
-
-        //Detail ansicht von einem rezept laden
+        /**
+         * Laden der Detailansicht eines ausgewählten Rezeptes.
+         * @param index - Der Index in recipes_all des ausgewählten Rezptes
+         */
         function detailRecipe(index)
-        {
+        {   
+            //Ansicht säubern
+            clearDetails();
+
+
+            //Das Rezept über den Index aus allen Rezepten laden
             const recipe = recipes_all[index];
+
+            //Titel soll im Header angezeigt werden
+            document.getElementById("header-title").textContent = recipe.title;
 
             //Den Index vom Ausgewählten Rezept speichern
             currentIndex = recipes_all.indexOf(recipe);
 
-            //Titel hinzufügen
-            const title = document.createElement("h2");
+            //Elemente erzeugen
+            const title = document.createElement("p");
+            const url = document.createElement("p");
+            const image = document.createElement("p");
+            const description = document.createElement("p");
+            const ingredients = document.createElement("p");
+            const yields = document.createElement("p");
+            const instructions = document.createElement("p");
+            const time = document.createElement("p");
+            const category = document.createElement("p");
+            const notes = document.createElement("p");
+            const created = document.createElement("p");
+            const changed = document.createElement("p");
+
+            //Inhalt hinzufügen
             title.textContent = recipe.title;
+            url.textContent = recipe.url;
+            image.textContent = recipe.image;
+            description.textContent = recipe.description;
+            ingredients.textContent = recipe.ingredients;
+            yields.textContent = recipe.yields;
+            instructions.textContent = recipe.instructions;
+            time.textContent = recipe.time;
+            notes.textContent = recipe.notes;
+            created.textContent = recipe.created;
+            changed.textContent = recipe.changed;
+
+            //Den Containern anhängen
             document.getElementById("detail-title").appendChild(title);
+            document.getElementById("detail-url").appendChild(url);
+            document.getElementById("detail-image").appendChild(image);
+            document.getElementById("detail-description").appendChild(description);
+            document.getElementById("detail-ingredients").appendChild(ingredients);
+            document.getElementById("detail-yields").appendChild(yields);
+            document.getElementById("detail-instructions").appendChild(instructions);
+            document.getElementById("detail-time").appendChild(time);
+            document.getElementById("detail-category").appendChild(category);
+            document.getElementById("detail-notes").appendChild(notes);
+            document.getElementById("detail-created").appendChild(created);
+            document.getElementById("detail-changed").appendChild(changed);
+
+            
+
+            //Link mit icon verbinden
+            document.getElementById("external-link").onclick = () => window.open(recipe.url, "_blank");
 
             //Bild hinzufügen
-            const image = document.createElement("img");
-            image.src = recipe.image || "https://placehold.co/300x200/transparent/transparent";
-            image.loading = "lazy"; //Laden auf den sichtbaren Bereich (Viewport) zu beschränken
-            document.getElementById("detail-image").appendChild(image);
+            const image_real = document.createElement("img");
+            image_real.src = recipe.image || "https://placehold.co/300x200/transparent/transparent";
+            image_real.loading = "lazy"; //Laden auf den sichtbaren Bereich (Viewport) zu beschränken
+            document.getElementById("detail-image").appendChild(image_real)
 
-            //Beschreibung hinzufügen
-            const description = document.createElement("p");
-            description.textContent = recipe.description;
-            document.getElementById("detail-description").appendChild(description);
-
-            //Informationen über Zutaten
-            //Zutaten
-            const ingredients = document.createElement("p");
-            ingredients.textContent = recipe.ingredients;
-            document.getElementById("detail-ingredients").appendChild(ingredients);
-            //Portionen
-            const yields = document.createElement("p");
-            yields.textContent = recipe.yields;
-            document.getElementById("detail-ingredients").appendChild(yields);
-
-            //Informationen über Anweisungen
-            //Zutaten
-            const instructions = document.createElement("p");
-            instructions.textContent = recipe.instructions;
-            document.getElementById("detail-instructions").appendChild(instructions);
-
-
-            //Informationen über Zeit hinzufügen
-            //Gesamtzeit
-            const total_time = document.createElement("p");
-            total_time.textContent = "Gesamtzeit " + recipe.total_time;
-            document.getElementById("detail-time").appendChild(total_time);
-            //Kochzeit
-            const cook_time = document.createElement("p");
-            cook_time.textContent = "Kochzeit " + recipe.cook_time;
-            document.getElementById("detail-time").appendChild(cook_time);
-            //Vorbereitungszeit
-            const prep_time = document.createElement("p");
-            prep_time.textContent = "Vorbereitungszeit " + recipe.prep_time;
-            document.getElementById("detail-time").appendChild(prep_time);
-
-            //Link hinzufügen
-            document.getElementById("open-link").onclick = () => window.open(recipe.canonical_url, "_blank");
-
-            //Zusätzliche Informationen
-            //Author
-            const author = document.createElement("p");
-            author.textContent = recipe.author;
-            document.getElementById("detail-infos").appendChild(author);
 
         }
 
-        
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//Editierfunktion bauen
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
-        // Rezepte aus der Datenbank laden und anzeigen, wenn die Seite neu gestartet wird
-        document.addEventListener('DOMContentLoaded', updateRecipes);
-
-
-        // Manuelle Rezepteingabe Freischalten
-        document.getElementById("add-recipe").addEventListener("click", function()
+        /**
+         * Klicken des Editier-Buttons.
+         * Das aktuell geladene Rezept wird bearbeitet
+         */
+        function openEditMode()
         {
-            document.getElementById("recipe-input").classList.remove("hidden")
-        });
+            //Öffne das Edit-Header-Menu
+            document.getElementById("menu-edit").classList.remove("hidden");
+
+            //Schließe das book-Header-Menu
+            document.getElementById("menu-book").classList.add("hidden");
+
+            //Schließe das Detail-Header-Menu
+            document.getElementById("menu-detail").classList.add("hidden");
+
+            //Entferne den Menu-Schließe-Button, damit man auf jeden Fall speichert/löscht/verwirft
+            document.getElementById("menu-icon").classList.add("hidden");
+            
+            //Detailansicht schließen
+            document.getElementById("detail-area").classList.add("hidden");
+
+            //Rezepteansicht schließen
+            document.getElementById("book").classList.add("hidden");
 
 
+            //Editieransicht öffnen
+            document.getElementById("edit-area").classList.remove("hidden");
 
-        // Eingegebende Rezept-Informationen in die Datenbank schreiben
-        document.getElementById("confirm").addEventListener("click", async function()
+        }
+
+        /**
+         * Den Editiermodus beenden und wieder in die Detailansicht zurückgehen.
+         */
+        function closeEditMode()
         {
-            // Input lesen
-            const title = document.getElementById('title').value;
-            const ingredients = document.getElementById('ingredients').value;
-            const instructions = document.getElementById('instructions').value;
+            //Detailansicht öffnen
+            document.getElementById("detail-area").classList.remove("hidden");    
+            //Editieransicht schließen
+            document.getElementById("edit-area").classList.add("hidden");
 
-            // In Datenbank schreiben
-            const { data, error } = await db //await: Warte bis Supabase reagiert
-                .from('recipes')
-            .insert({ title : title, ingredients : ingredients, instructions : instructions})
-            console.log(error)
+            //Schließe das Edit-Header-Menu
+            document.getElementById("menu-edit").classList.add("hidden");
 
-            // Input zurücksetzen
-            document.getElementById('title').value = "";
-            document.getElementById('ingredients').value = "";
-            document.getElementById('instructions').value = "";
+            //Füge den Menu-Schließe-Button, wieder hinzu
+            document.getElementById("menu-icon").classList.remove("hidden");
+            document.getElementById("menu-detail").classList.remove("hidden");
 
-            //Manuelle Rezepte eingabe wieder verdecken
-            document.getElementById("recipe-input").classList.add("hidden")
+            //Menu schließen
+            closeMenu();
 
-            //lokale Rezeptdaten neuladen und anzeigen
-            updateRecipes();
+            //Ändere die Überschrift
+            document.getElementById("header-title").textContent = recipes_all[currentIndex].title;
 
-        });
+        }
 
-        
-        //Neues Rezept eingeben abbrechen aber Draft speichern
-        document.getElementById("saveDraft").addEventListener("click", function()
+        /**
+         * Das aktuelle Rezept in den Editiermodus laden.
+         */
+        function loadRecipeToEditMode(index)
         {
-            //Manuelle Rezepte eingabe wieder verdecken
-            document.getElementById("recipe-input").classList.add("hidden")
+            //Rezept laden
+            recipe = recipes_all[index];
 
-        });
-        
-        //Neues Rezept eingeben abbrechen
-        document.getElementById("cancel").addEventListener("click", function()
-        {   
-            //Confirm modal öffnen
-            document.getElementById('confirm-modal').classList.remove("hidden");
+            //Das Aktuelle Rezept in den Input einfügen
+            document.getElementById("edit-title-input").value = recipe.title;
+            document.getElementById("edit-url-input").value = recipe.url;
+            document.getElementById("edit-image-input").value = recipe.image;
+            document.getElementById("edit-description-input").value = recipe.description;
+            document.getElementById("edit-ingredients-input").value = recipe.ingredients;
+            document.getElementById("edit-yields-input").value = recipe.yields;
+            document.getElementById("edit-instructions-input").value = recipe.instructions;
+            document.getElementById("edit-time-input").value = recipe.time;
+            document.getElementById("edit-category-input").value = recipe.category;
+            document.getElementById("edit-notes-input").value = recipe.notes;
+            document.getElementById("edit-created-input").value = recipe.created;
+            document.getElementById("edit-changed-input").value = recipe.changed;
 
-        });
+        }
+
+        /**
+         * Editiermodus leeren
+         */
+        function emptyEditMode()
+        {
+            //Leeren
+            document.getElementById("edit-title-input").value = "";
+            document.getElementById("edit-url-input").value = "";
+            document.getElementById("edit-image-input").value = "";
+            document.getElementById("edit-description-input").value = "";
+            document.getElementById("edit-ingredients-input").value = "";
+            document.getElementById("edit-yields-input").value = "";
+            document.getElementById("edit-instructions-input").value = "";
+            document.getElementById("edit-time-input").value = "";
+            document.getElementById("edit-category-input").value = "";
+            document.getElementById("edit-notes-input").value = "";
+            document.getElementById("edit-created-input").value = "";
+            document.getElementById("edit-changed-input").value = "";
+
+        }
+
+        /**
+         * Das bearbeitete oder neue Rezept sichern.
+         */
+        async function saveRecipe() {
+
+            //Den Input auslesen
+            const title = document.getElementById("edit-title-input").value;
+            const url = document.getElementById("edit-url-input").value;
+            const image = document.getElementById("edit-image-input").value;
+            const description = document.getElementById("edit-description-input").value;
+            const ingredients = document.getElementById("edit-ingredients-input").value;
+            const yields = document.getElementById("edit-yields-input").value;
+            const instructions = document.getElementById("edit-instructions-input").value;
+            const time = document.getElementById("edit-time-input").value;
+            const category = document.getElementById("edit-category-input").value;
+            const notes = document.getElementById("edit-notes-input").value;
+            const created = document.getElementById("edit-created-input").value;
+            const changed = document.getElementById("edit-changed-input").value;
+
+            let currentID;
+
+            //Wenn es ein neues Rezept ist, neu in die Datenbank einfügen
+            if (isNew)
+            {
+                // In Datenbank schreiben
+                const { data, error } = await db //await: Warte bis Supabase reagiert
+                    .from('recipes')
+                    .insert({
+                            title : title, url : url, image : image,
+                            description : description, ingredients : ingredients, yields : yields,
+                            instructions : instructions, time : time, category : category,
+                            notes : notes, created : created, changed : changed
+                        })
+                    .select()
+                    .single();
+                console.log(error);
+                
+                //die ID des eingefügten Rezeptes laden
+                currentID = data.id;
+                
+                //Variable zurücksetzen
+                isNew = false;
+            }
+            //Wenn es eine Bearbeitung ist, die Datenbank updaten
+            else
+            {
+                //Aktuelle ID merken
+                currentID = recipes_all[currentIndex].id
+
+                // In Datenbank schreiben
+                const { data, error } = await db //await: Warte bis Supabase reagiert
+                    .from('recipes')
+                    .update({
+                            title : title, url : url, image : image,
+                            description : description, ingredients : ingredients, yields : yields,
+                            instructions : instructions, time : time, category : category,
+                            notes : notes, created : created, changed : changed
+                        })
+                    .eq('id', currentID)
+            }
+
+//!!!
+// er lädt immer kurz ein anderes Rezept
+//es gibt eine kleine verzögerung die ich nicht finden kann
+//!!!
+
+            //lokale Rezeptdaten neuladen
+            await updateRecipes();
+            console.log(recipes_all);
+
+            //Den Index aktualisieren (falls er sich geändert hat, durch andere Reihenfolge in db)
+            currentIndex = recipes_all.findIndex(r => r.id === currentID);
+     
+            // Editierfelder leeren
+            emptyEditMode();
+
+            //Detailansicht updaten
+            detailRecipe(currentIndex);
+
+        }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////// Modal //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         document.getElementById("modal-ja").addEventListener("click", function()
         {
