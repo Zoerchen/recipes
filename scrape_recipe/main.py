@@ -29,7 +29,7 @@ class ScrapeRequest(BaseModel):
 #CORS aktivieren
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # später auf deine GitHub Pages URL einschränken
+    allow_origins=["https://zoerchen.github.io/recipes/"],  # später auf deine GitHub Pages URL einschränken
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -194,7 +194,7 @@ def scrapingRecipe(url):
     url = os.getenv("SUPABASE_URL")
     key = os.getenv("SUPABASE_KEY")
     db = create_client(url, key)
-    
+
     # Rezept in die Supabase schreiben
     db.table("recipes").insert({
         "title": title, "url" : url, "image" : image,

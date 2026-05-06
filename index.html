@@ -307,6 +307,23 @@
 <body> <!-- alles was der Benutzer sieht -->
 
 <!------------------------------------------------------------------------------------------>
+<!---------------------------- Login ------------------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
+<!------------------------------------------------------------------------------------------>
+<!---------------------------- Login ------------------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
+<div id="login">
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email">
+    <input type="password" id="login-password" placeholder="Passwort">
+    <button id="login-btn">Einloggen</button>
+    <p id="login-error" class="hidden">Falsches Passwort oder Email</p>
+</div>
+
+<div id="website" class="hidden">
+<!------------------------------------------------------------------------------------------>
 <!---------------------------- Header ------------------------------------------------------>
 <!------------------------------------------------------------------------------------------>
 
@@ -334,14 +351,17 @@
         <div id="menu"class="hidden">
             <!--- Menu: Rezepteübersicht --->
             <div id="menu-book">
-                <div id="menu-left">
+                <div>
                     <i id="to-new-recipe" class="fa fa-plus clickable"></i>
                 </div>
-                <div id="menu-middle">
+                <div >
                     <i id="back-to-top" class="fa fa-chevron-up clickable"></i>
                 </div>
-                <div id="menu-right">
+                <div>
                     <i id="to-shopping-list" class="fa fa-shopping-basket clickable"></i>
+                </div>
+                <div>
+                    <i id="log-out" class="fa fa-sign-out clickable"></i>
                 </div>
             </div>
             <!--- Menu: Detailansicht --->
@@ -508,6 +528,7 @@
         </div>
 
     </div>
+</div>
     
 
     <script> // Javaskript
@@ -968,6 +989,55 @@
         //////////////// allgemeine Funktionen /////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        
+
+        
+
+        // Prüfen ob eingeloggt
+        //const { data: { session } } = await db.auth.getSession()
+        //if (!session) {
+        //    // Login anzeigen
+        //}
+
+        document.getElementById("login-btn").addEventListener("click", async function() {
+    
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+
+            const { data, error } = await db.auth.signInWithPassword({
+                email: email,
+                password: password
+            })
+
+            if (error) {
+                // Fehlermeldung anzeigen
+                document.getElementById("login-error").classList.remove("hidden");
+            } else {
+                // Eingeloggt → Login verstecken, App anzeigen
+                document.getElementById("login").classList.add("hidden");
+                document.getElementById("website").classList.remove("hidden");
+                updateRecipes();
+            }
+        })
+
+        document.getElementById("log-out").addEventListener("click", async function() {
+            await db.auth.signOut()
+            updateRecipes();
+        })
+
+        
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const { data: { session } } = await db.auth.getSession()
+            
+            if (session) {
+                document.getElementById("login").classList.add("hidden");
+                document.getElementById("website").classList.remove("hidden");
+                updateRecipes();
+            }
+        })
+        
+        
         /**
          * Verbindung mit Supabase herstellen.
          */
@@ -996,8 +1066,6 @@
             recipes_all.forEach(loadRecipes);    
         }
 
-        // Rezepte aus der Datenbank laden und anzeigen, wenn die Seite neu gestartet wird
-        document.addEventListener('DOMContentLoaded', updateRecipes);
 
 
         async function scrapeRecipe(url) {
