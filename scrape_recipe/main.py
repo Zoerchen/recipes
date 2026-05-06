@@ -29,7 +29,11 @@ class ScrapeRequest(BaseModel):
 #CORS aktivieren
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://zoerchen.github.io/recipes/"],  # später auf deine GitHub Pages URL einschränken
+    allow_origins=[
+        "https://zoerchen.github.io/recipes",
+        "http://127.0.0.1:5500",  # für lokale Entwicklung
+        "http://localhost:5500"    # für lokale Entwicklung],  # später auf deine GitHub Pages URL einschränken
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
