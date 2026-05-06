@@ -196,7 +196,7 @@ def scrapingRecipe(url):
     # Mit Supabase verbinden
     load_dotenv()
     url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_KEY")
+    key = os.getenv("SUPABASE_SERVICE_KEY")
     db = create_client(url, key)
 
     # Rezept in die Supabase schreiben
