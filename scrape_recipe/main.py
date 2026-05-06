@@ -24,6 +24,7 @@ app = FastAPI()
 # Definiert wie die Anfrage aussehen soll (wir wollen eine url als string)
 class ScrapeRequest(BaseModel):
     url: str
+    token: str
 
 
 #CORS aktivieren
@@ -41,6 +42,14 @@ app.add_middleware(
 
 @app.post("/scrape")
 async def scrape_recipe(request: ScrapeRequest):
+
+    # Prüfen ob der User eingeloggt ist
+    token = request.token  # JWT Token vom Browser mitschicken
+    user = db_anon.auth.get_user(token)
+
+    if not user:
+        return {"error": "Nicht eingeloggt"}
+    
     url = request.url
     scrapingRecipe(url)
     return {"success": True, "url": url}

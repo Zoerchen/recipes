@@ -1020,6 +1020,7 @@
             }
         })
 
+        //Log-Out
         document.getElementById("log-out").addEventListener("click", async function() {
             await db.auth.signOut()
             updateRecipes();
@@ -1067,12 +1068,15 @@
         }
 
 
-
+        //Prüfen ob eingeloggt und token laden
+        const { data: { session } } = await db.auth.getSession()
+        const token = session.access_token // das ist der JWT Token
+        
         async function scrapeRecipe(url) {
             const response = await fetch("https://recipes-dtto.onrender.com/scrape", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: url })
+                body: JSON.stringify({ url: url , token: token})
             })
             const data = await response.json()
             console.log(data)
