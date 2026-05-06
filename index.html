@@ -196,7 +196,7 @@
             border-radius: 0px 0px 10px 10px;    
         }
 
-        #menu-book, #menu-detail, #menu-edit
+        #menu-book, #menu-detail, #menu-edit, #menu-scrape
         {
             display: flex;
             align-items: center;
@@ -211,6 +211,7 @@
         #main
         {
             padding-top: 85px; /* ungefähr die Höhe des Headers */
+
         }
 
         .card /* Style von Rezeptekarten*/
@@ -376,6 +377,14 @@
                     <i id="delete" class="fa fa-trash clickable"></i> 
                 </div>
             </div>
+            <!--- Menu: Neues-Rezept-Seite --->
+            <div id="menu-scrape"class="hidden">
+                <div></div>
+                <div>
+                    <i id="back-to-book" class="fa fa-book clickable"></i> 
+                </div>
+                <div></div>
+            </div>
         </div>
     </div>
 
@@ -413,6 +422,20 @@
             <div id="detail-changed"></div>
 
         </div>
+
+<!------------------------------------------------------------------------------------------>
+<!------------------------- neues Rezept - Seite ------------------------------------------->
+<!------------------------------------------------------------------------------------------>
+
+    <div id="new-recipe" class="hidden">
+        <input id="scrape-url" placeholder="Füge den Link des Rezeptes ein">
+        <div id="scrape-button" class="clickable">
+            <p>Scrape!</p>
+        </div>
+        <div id="new-recipe-manuell" class="clickable">
+            <p>Neues Rezept manuell eingeben</p>
+        </div>
+    </div>
 
 <!------------------------------------------------------------------------------------------>
 <!---------------------------- Bearbeitungsmodus ------------------------------------------->
@@ -627,6 +650,24 @@
             
         }
 
+        /**
+         * Verstecke das Suchfeld.
+         */
+        function hideSearch()
+        {
+            closeSearch()
+            document.getElementById("search-icon").classList.add("hidden"); 
+        }
+
+        /**
+         * Zeige wieder das Suchfeld.
+         */
+        function showSearch()
+        {
+            document.getElementById("search-icon").classList.remove("hidden");
+        }
+
+
         ////////////// Menu /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /**
@@ -675,6 +716,26 @@
             document.getElementById("menu-icon").classList.add("fa-bars");
         }
 
+        /**
+         * Das Menu verstecken.
+         */
+        function hideMenu()
+        {   
+            closeMenu();
+            document.getElementById("menu-icon").classList.add("hidden");
+
+        }
+
+        /**
+         * Das Menu zeigen
+         */
+        function showMenu()
+        {   
+            document.getElementById("menu-icon").classList.remove("hidden");
+
+        }
+
+
         ///////// Menu-Icons ///////////////////////////////////////////////////////////////////////////////////
 
         /**
@@ -683,12 +744,59 @@
         document.getElementById("to-new-recipe").addEventListener("click", function()
         {   
             //Ändere die Überschrift
-            document.getElementById("header-title").textContent = "neues Rezept erstellen";
+            document.getElementById("header-title").textContent = "neues Rezept hinzufügen";
 
-            isNew = true;
+            //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
+            window.scrollTo(0, 0)
 
-            bookToEdit();
+            //Rezepteübersicht ausblenden, neue Rezepte-Seite einblenden
+            document.getElementById("book").classList.add("hidden");
+            document.getElementById("new-recipe").classList.remove("hidden");
+
+            //Suche und Menu ausblenden
+            hideSearch();
+            hideMenu();
+
+            //Zurückgeh Icon einblenden
+            document.getElementById("menu-book").classList.add("hidden");
+            document.getElementById("menu-scrape").classList.remove("hidden");
+
+            openMenu();
+
         })
+
+        /**
+         * Klicken des Menu-Icons: Zurück zur Rezepteübersicht von der neues Rezept-Seite
+         */
+        document.getElementById("back-to-book").addEventListener("click", function()
+        { 
+            //Ändere die Überschrift
+            document.getElementById("header-title").textContent = "Rezepte";
+
+            //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
+            window.scrollTo(0, 0)
+
+            //Rezepteübersicht einblenden, neue Rezepte-Seite ausblenden
+            document.getElementById("book").classList.remove("hidden");
+            document.getElementById("new-recipe").classList.add("hidden");
+
+            //Suche und Menu ausblenden
+            showSearch();
+            showMenu();
+
+            //Richtige Menu-Icons einblenden einblenden
+            document.getElementById("menu-book").classList.remove("hidden");
+            document.getElementById("menu-scrape").classList.add("hidden");
+
+            //Menu schließen
+            closeMenu();
+            
+            
+            //URL clearen 
+            document.getElementById("scrape-url").value = ""; 
+        })    
+
+        
         
         
         /**
@@ -821,26 +929,22 @@
             {
                 //Variable zurücksetzen
                 isNew = false;    
-                //Rezepteübersicht öffnen
-                document.getElementById("book").classList.remove("hidden");    
+                //Neues Rezept-seite öffnen
+                document.getElementById("new-recipe").classList.remove("hidden");    
                 //Editieransicht schließen
                 document.getElementById("edit-area").classList.add("hidden");
 
                 //Schließe das Edit-Header-Menu
                 document.getElementById("menu-edit").classList.add("hidden");
 
-                //Füge den Menu-Schließe-Button, wieder hinzu
-                document.getElementById("menu-icon").classList.remove("hidden");
-                document.getElementById("menu-book").classList.remove("hidden");
-
-                //Menu schließen
-                closeMenu();
+                //Öffne das scrape menu
+                document.getElementById("menu-scrape").classList.remove("hidden");
 
                 //Edit felder leeren
                 emptyEditMode();
 
                 //Ändere die Überschrift
-                document.getElementById("header-title").textContent = "Rezepte";
+                document.getElementById("header-title").textContent = "neues Rezept hinzufügen";
             }
             //Wenn ein Rezept editiert wurde und undo gemacht werden soll
             else
@@ -895,6 +999,18 @@
         // Rezepte aus der Datenbank laden und anzeigen, wenn die Seite neu gestartet wird
         document.addEventListener('DOMContentLoaded', updateRecipes);
 
+
+        async function scrapeRecipe(url) {
+            const response = await fetch("http://localhost:8000/scrape", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: url })
+            })
+            const data = await response.json()
+            console.log(data)
+            alert("Erfolgreich? " + data.success)
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////// Funktionen auf der Rezepte-Übersicht /////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -921,9 +1037,9 @@
 
             //Titel hinzufügen
             const card_title = document.createElement("h2");
-            if ((recipe.title || "").length > 25)
+            if ((recipe.title || "").length > 20)
             {
-                card_title.textContent = recipe.title.slice(0, 22) + "..." ;
+                card_title.textContent = recipe.title.slice(0, 20) + "..." ;
                 card_title.dataset.tooltip = recipe.title //damit der ganze Titel angezeigt wird wenn man drauf bleibt
             }
             else
@@ -953,52 +1069,52 @@
                 //Rezepteansicht schließen
                 document.getElementById("book").classList.add("hidden");
 
-                //Wenn die Detailansicht aufgerufen wird, soll das Suchicon ausgeblendet werden
-                document.getElementById("search-icon").classList.add("hidden");
-
                 //Die Icons der Menuleiste im header ändern
                 document.getElementById("menu-book").classList.add("hidden");
                 document.getElementById("menu-detail").classList.remove("hidden");
                 
-                //Suchfeld geöffnet -> Schließen
-                if (!(document.getElementById("search-field").classList.contains("hidden"))) 
-                {
-                    closeSearch();
-                    
-                }
-
-                //Menu geöffnet -> Schließen
-                if (!(document.getElementById("menu").classList.contains("hidden"))) 
-                {
-                    closeMenu();
-                }
+            
+                //Verstecke die Suche
+                hideSearch();
+                 
+                //Menu schließen
+                closeMenu();
 
                 //Detailansicht öffnen
                 document.getElementById("detail-area").classList.remove("hidden");
 
             }, 200)
         }
-            
-        function bookToEdit()
-        {                   
+
+        
+        /**
+         * Auf der Neue Rezepte seite, klicken des feldes: Manuell eingeben,
+         * öffnet dann eine leere Edit-Seite
+         */
+        document.getElementById("new-recipe-manuell").addEventListener("click", function()
+        {       
+                
+                //Ändere die Überschrift
+                document.getElementById("header-title").textContent = "neues Rezept erstellen";
+
+                isNew = true;
+
                 //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
                 window.scrollTo(0, 0)
+
+                //Schließe das scrape-Menu
+                document.getElementById("menu-scrape").classList.add("hidden");
+
+                //Schließe die scrape-Seite
+                document.getElementById("new-recipe").classList.add("hidden");
+
 
                 //Editansicht öffnen
                 openEditMode()
 
-                //Wenn die Detailansicht aufgerufen wird, soll das Suchicon ausgeblendet werden
-                document.getElementById("search-icon").classList.add("hidden");
 
-                
-                //Suchfeld geöffnet -> Schließen
-                if (!(document.getElementById("search-field").classList.contains("hidden"))) 
-                {
-                    closeSearch();
-                    
-                }
 
-        }
+        })
    
         
 
@@ -1019,7 +1135,7 @@
             document.getElementById("book").classList.remove("hidden");
 
             //Suchicon im Header wieder einblenden
-            document.getElementById("search-icon").classList.remove("hidden");
+            showSearch()
 
             //Die Icons der Menuleiste im header ändern
             document.getElementById("menu-detail").classList.add("hidden");
@@ -1325,6 +1441,16 @@
             detailRecipe(currentIndex);
 
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////// Scraping //////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+         document.getElementById("scrape-button").addEventListener("click", function()
+        {
+            const url = document.getElementById("scrape-url").value;
+            scrapeRecipe(url)
+        })
 
 
 
