@@ -946,6 +946,7 @@
             const { data: { session } } = await db.auth.getSession()
 
             //Wenn nicht eingeloggt, dann Alert und abbrechen
+            //eigentlich nur als back-up, den symbol sollte gar nicht da sein, wenn ausgeloggt
             if (!session) {
                 alert("Du bist nicht autorisiert, Rezepte zu erstellen. Bitte logge dich ein.");
                 return
@@ -1000,8 +1001,9 @@
             closeMenu();
             
             
-            //URL clearen 
+            //URL und Meldungen clearen 
             document.getElementById("scrape-url").value = ""; 
+            document.getElementById("scrape-errors").textContent = "";
         })    
 
         
@@ -1646,17 +1648,17 @@
                 body: JSON.stringify({ url: url , token: token})
             })
             const data = await response.json()
-            console.log(data)
+
+            //Überprüfen, ob erfolgreich und Info schreiben.
             if (data.success)
             {
                 document.getElementById("scrape-errors").textContent = "Das Rezept wurde erfolgreich gespeichert.";
             }
             else
             {
-                document.getElementById("scrape-errors").textContent = "Das Rezept konnte nicht gespeichert werden. Ein Fehler ist aufgetreten:" + data.error;    
+                document.getElementById("scrape-errors").textContent = "Das Rezept konnte nicht gespeichert werden. Ein Fehler ist aufgetreten: " + data.error;    
             }
-            console.log(error)
-            console.log(data.success)
+
         }
 
         document.getElementById("scrape-button").addEventListener("click", function()
