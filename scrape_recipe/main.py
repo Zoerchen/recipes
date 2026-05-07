@@ -22,7 +22,7 @@ app = FastAPI()
 
 # Definiert wie die Anfrage aussehen soll (wir wollen eine url als string)
 class ScrapeRequest(BaseModel):
-    request_url: str
+    url: str
     token: str
 
 
@@ -230,11 +230,11 @@ async def scrape_recipe(request: ScrapeRequest):
     if not user.user:
         return {"error": "Nicht eingeloggt"}
     
-    request_url = request.request_url
-    scrapingRecipe(request_url)
+    recipe_url = request.url
+    scrapingRecipe(recipe_url)
 
     
-    return {"success": True, "url": request_url}
+    return {"success": True, "url": recipe_url}
 
 
 
