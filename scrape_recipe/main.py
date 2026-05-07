@@ -95,12 +95,11 @@ def scrapingRecipe(url):
 
         # Webseite hat kein Rezeptschema
         except NoSchemaFoundInWildMode:
-            print("Kein Rezeptschema gefunden - manuelle Eingabe nötig")
-            # später: Fehlermeldung an die Web-App zurückschicken
+            return {"success": False, "error": "Die Webseite ist nicht nach einem Rezept-Schema aufgebaut."}
         
         # andere Fehler
         except Exception as e:
-            print("Anderer Fehler:", e)
+            return {"success": False, "error": str(e)}
 
 ########################################################################################################################################################
 ##################### Rezept Scrapen ###################################################################################################################
@@ -228,7 +227,7 @@ async def scrape_recipe(request: ScrapeRequest):
     user = db_anon.auth.get_user(token)
 
     if not user.user:
-        return {"error": "Nicht eingeloggt"}
+        return {"success": False, "error": "Nicht eingeloggt"}
     
     recipe_url = request.url
     scrapingRecipe(recipe_url)
