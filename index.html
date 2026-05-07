@@ -311,7 +311,7 @@
 <!---------------------------- Login ------------------------------------------------------->
 <!------------------------------------------------------------------------------------------>
 
-<div id="login">
+<div id="login" class="hidden">
     <h2>Login</h2>
     <input type="email" id="login-email" placeholder="Email">
     <input type="password" id="login-password" placeholder="Passwort">
@@ -358,7 +358,7 @@
                     <i id="to-shopping-list" class="fa fa-shopping-basket clickable"></i>
                 </div>
                 <div>
-                    <i id="log-out" class="fa fa-sign-out clickable"></i>
+                    <i id="log" class="fa fa-sign-in clickable"></i>
                 </div>
             </div>
             <!--- Menu: Detailansicht --->
@@ -583,6 +583,40 @@
         //    // Login anzeigen
         //}ss
 
+        /**
+         * Klicken des Log-Zeichen im Header führt zum Login wenn nicht eingeloggt
+         * und loggt aus, wenn man ein geloggt ist
+         */
+        document.getElementById("log").addEventListener("click", async function() {
+
+            //Prüfen, ob eingeloggt oder nicht
+            const { data: { session } } = await db.auth.getSession()
+
+            // Wenn eingeloggt
+            if (session)
+            {
+                // ausloggen
+                await db.auth.signOut()
+
+                //Icon ändern
+                document.getElementById("log").classList.add("fa-sign-in")
+                document.getElementById("log").classList.remove("fa-sign-out")
+            }
+
+            //Wenn nicht eingeloggt
+            else
+            {
+                //Den Login-In-Screen öffnen
+                document.getElementById("website").classList.add("hidden")
+                document.getElementById("login").classList.remove("hidden")    
+            }
+        })
+
+
+        /**
+         * Auf der Log-In-Seite den Button klicken, um sich einzuloggen,
+         * prüfen der Eingabe, zurück zur Seite Icon ändern
+         */
         document.getElementById("login-btn").addEventListener("click", async function() {
     
             const email = document.getElementById("login-email").value;
@@ -600,26 +634,45 @@
                 // Eingeloggt → Login verstecken, App anzeigen
                 document.getElementById("login").classList.add("hidden");
                 document.getElementById("website").classList.remove("hidden");
+
+                //Log-In Icon ändern
+                document.getElementById("log").classList.remove("fa-sign-in")
+                document.getElementById("log").classList.add("fa-sign-out")
+
+                //Rezepte laden
                 updateRecipes();
             }
         })
 
-        //Log-Out
-        document.getElementById("log-out").addEventListener("click", async function() {
-            await db.auth.signOut()
-            updateRecipes();
-        })
+
 
         
-
+        /**
+         * Wenn die Seite neu geladen wird
+         */
         document.addEventListener('DOMContentLoaded', async function() {
+
+            //Login-In Status abrufen
             const { data: { session } } = await db.auth.getSession()
             
-            if (session) {
-                document.getElementById("login").classList.add("hidden");
-                document.getElementById("website").classList.remove("hidden");
-                updateRecipes();
+            //wenn eingeloggt
+            if (session)
+            {
+                //logout-zeichen zeigen
+                document.getElementById("log").classList.add("fa-sign-out");
+                document.getElementById("log").classList.remove("fa-sign-in");
+                
             }
+            //wenn ausgeloggt
+            else
+            {
+                //login-zeichen zeigen
+                document.getElementById("log").classList.remove("fa-sign-out");
+                document.getElementById("log").classList.add("fa-sign-in");
+            }
+
+            //Rezepte laden
+            updateRecipes();
         })
 
         
