@@ -1645,15 +1645,15 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ url: url , token: token})
             })
-            const { data, error } = await response.json()
+            const data = await response.json()
             console.log(data)
             if (data.success)
             {
-                document.getElementById("scrape-errors").textContent = "Das Rezept wurde erfolgreich gescraped.";
+                document.getElementById("scrape-errors").textContent = "Das Rezept wurde erfolgreich gespeichert.";
             }
             else
             {
-                document.getElementById("scrape-errors").textContent = "Ein Fehler ist aufgetreten. Das Rezept konnte nicht gescraped werden."    
+                document.getElementById("scrape-errors").textContent = "Das Rezept konnte nicht gespeichert werden. Ein Fehler ist aufgetreten:" + data.error;    
             }
             console.log(error)
             console.log(data.success)
