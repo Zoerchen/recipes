@@ -14,7 +14,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 
-
 ########################################################################################################################################################
 ##################### FastAPI ##########################################################################################################################
 ########################################################################################################################################################
@@ -23,7 +22,7 @@ app = FastAPI()
 
 # Definiert wie die Anfrage aussehen soll (wir wollen eine url als string)
 class ScrapeRequest(BaseModel):
-    url: str
+    request_url: str
     token: str
 
 
@@ -39,32 +38,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.post("/scrape")
-async def scrape_recipe(request: ScrapeRequest):
-
-    # Prüfen ob der User eingeloggt ist
-    token = request.token  # JWT Token vom Browser mitschicken
-    user = db_anon.auth.get_user(token)
-
-    if not user:
-        return {"error": "Nicht eingeloggt"}
-    
-    url = request.url
-    scrapingRecipe(url)
-    return {"success": True, "url": url}
-
-
-
 ########################################################################################################################################################
-##################### URL eingeben #####################################################################################################################
+##################### URL eingeben (lokal) #####################################################################################################################
 ########################################################################################################################################################
 
 # URL eingeben
 #url = "https://www.zaubertopf.de/zimtschnecken-kekse-thermomix-rezept/"
 #url = "https://www.zuckerjagdwurst.com/de/rezepte/knuspriger-kartoffelsalat-spargel-veganes-honig-senf-dressing"
-url = ""
 
+########################################################################################################################################################
+##################### Hilfsfunktionen ###############################################################################################
+########################################################################################################################################################
+
+
+########## List to String Methode ##########
+
+def to_str(value):
+    if isinstance(value, list):
+        return ', '.join(str(v) for v in value)
+    return str(value) if value else ""
 
 
 ########################################################################################################################################################
@@ -110,9 +102,9 @@ def scrapingRecipe(url):
         except Exception as e:
             print("Anderer Fehler:", e)
 
-    ########################################################################################################################################################
-    ##################### Rezept Scrapen ###################################################################################################################
-    ########################################################################################################################################################
+########################################################################################################################################################
+##################### Rezept Scrapen ###################################################################################################################
+########################################################################################################################################################
 
     # JSON mit allen Informationen erstellen
     json = scraper.to_json() 
@@ -197,32 +189,57 @@ def scrapingRecipe(url):
     notes += ("Bewertung: " + str(ratings) +"\n") if ratings else ""
     notes += ("von: " + str(rating_count) +" Bewertungen") if rating_count else ""
 
-    ########################################################################################################################################################
-    ##################### Rezept in die Datenbank schreiben ################################################################################################
-    ########################################################################################################################################################
-
-
-    # Mit Supabase verbinden
-    load_dotenv()
-    url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_SERVICE_KEY")
-    db = create_client(url, key)
+########################################################################################################################################################
+##################### Rezept in die Datenbank schreiben ################################################################################################
+########################################################################################################################################################
 
     # Rezept in die Supabase schreiben
-    db.table("recipes").insert({
+    db_service.table("recipes").insert({
         "title": title, "url" : url, "image" : image,
         "description" : description, "ingredients" : ingredients, "yields" : yields,
         "instructions" : instructions, "time" : time, "category" : category,
         "notes" : notes, "created" : created, "changed" : changed
         }).execute()
+    
 
 
-########## List to String Methode ##########
 
-def to_str(value):
-    if isinstance(value, list):
-        return ', '.join(str(v) for v in value)
-    return str(value) if value else ""
+########################################################################################################################################################
+##################### FastAPI ##########################################################################################################################
+########################################################################################################################################################
+
+
+# Mit Supabase verbinden
+load_dotenv()
+url = os.getenv("SUPABASE_URL")
+anon_key = os.getenv("SUPABASE_KEY") # Anon key
+service_key = os.getenv("SUPABASE_SERVICE_KEY") #Service Role Key
+db_anon = create_client(url, anon_key) # für Auth-Prüfung
+db_service = create_client(url, service_key) # für Datenbank
+
+
+@app.post("/scrape")
+async def scrape_recipe(request: ScrapeRequest):
+
+    # Prüfen ob der User eingeloggt ist
+    token = request.token  # JWT Token vom Browser mitschicken
+
+    
+    user = db_anon.auth.get_user(token)
+
+    if not user.user:
+        return {"error": "Nicht eingeloggt"}
+    
+    request_url = request.request_url
+    scrapingRecipe(request_url)
+
+    
+    return {"success": True, "url": request_url}
+
+
+
+
+
 
 
 
