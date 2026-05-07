@@ -3,6 +3,8 @@
 
 <head> <!-- unsichtbare Infos (Titel, Zeichensatz usw.) -->
 
+    <link rel="icon" type="./jpg" href="favicon.jpg"> <!-- Browsericon  typisch png 16×16 oder 32×32 Pixel-->  
+
     <meta charset="UTF-8"> <!-- welche Zeichen der Browser darstellen soll  -->    
     
     <title>Rezepte</title> <!-- Titel der beim Tab angezeigt wird-->
@@ -1245,6 +1247,8 @@
          */
         document.getElementById("save").addEventListener("click", function()
         {   
+            
+            
             //Rezept speichern
             saveRecipe();
             
@@ -1380,7 +1384,9 @@
          */
         document.getElementById("new-recipe-manuell").addEventListener("click", function()
         {       
-                
+                //Scrollen erlauben
+                document.body.style.overflow = "" ;
+
                 //Ändere die Überschrift
                 document.getElementById("header-title").textContent = "neues Rezept erstellen";
 
