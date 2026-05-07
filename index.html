@@ -20,6 +20,7 @@
             --dunkelblau: rgb(75, 66, 200);
             --dunkelblau-akzent: rgb(47, 39, 156);
             --dunkelblau_transparent: rgb(75, 66, 200, 0.5);
+            --hellblau-transparent: rgb(109, 186, 219, 0.5);
             --rosa: rgb(255, 147, 232);
             --dunkelrosa: rgb(190, 47, 159);
             --hintergrund: rgb(210, 128, 232);
@@ -32,6 +33,11 @@
             color: var(--lila); /*Schrift-Farbe*/
             font-family: var(--schriftart); /*Schrift-Art*/
             background-color: var(--hintergrund) /*Hintergrundsfarbe*/
+        }
+
+        p
+        {
+            margin: 5px 0; /* oben/unten kleiner Abstand */
         }
 
         button /* Style des Buttons */
@@ -96,8 +102,8 @@
         .modal
         {
             padding: 2rem;
-            
             text-align: center;
+            gap:10px;
         }
 
 
@@ -190,7 +196,7 @@
             border-color: var(--dunkelblau-akzent);
             outline: none;
             background: transparent;
-            color: var(--dunkelblau);
+            color: var(--dunkelblau-akzent);
         }
 
         input:focus::placeholder
@@ -209,6 +215,11 @@
         .input-error::placeholder /*Placeholder-Style (Input)*/
         { 
             color: var(--dunkelrosa);
+        }
+
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px var(--hellblau-transparent) inset; /* Hintergrundfarbe */
+            -webkit-text-fill-color: var(--dunkelblau); /* Textfarbe */
         }
 
         #search-value
@@ -314,7 +325,9 @@
         .space-login
         {
             display: flex;
+            align-items: center; /* sorgt für gleiche Höhe */
             justify-content: space-between;
+            gap: 10px; /* Abstand zwischen den Elementen */
         }
 
         @keyframes wackeln {
@@ -351,6 +364,26 @@
             outline: none;
             background: rgba(255, 255, 255, 0.3);
         }*/
+
+        /********************* Neues Rezept  ****************************/
+        
+
+        #scrape-url
+        {
+            width: 100%;
+        }
+    
+
+        /*<div id="new-recipe" class="hidden">
+        <div>
+            <input id="scrape-url" placeholder="Füge den Link des Rezeptes ein">
+            <p id="scrape-button" class="clickable">Scrape!</p>
+        </div>
+        <p id="new-recipe-manuell" class="clickable">Neues Rezept manuell eingeben</p>
+        <div>
+            <p id="scrape-errors"></p>
+        </div>
+    </div>*/
 
 
 /**/
@@ -466,6 +499,8 @@
         </div>
     </div>
 
+
+
 <!------------------------------------------------------------------------------------------>
 <!---------------------------- Hauptbereich ------------------------------------------------>
 <!------------------------------------------------------------------------------------------>   
@@ -505,18 +540,43 @@
 <!------------------------- neues Rezept - Seite ------------------------------------------->
 <!------------------------------------------------------------------------------------------>
 
-    <div id="new-recipe" class="hidden">
-        <input id="scrape-url" placeholder="Füge den Link des Rezeptes ein">
-        <div id="scrape-button" class="clickable">
-            <p>Scrape!</p>
-        </div>
-        <div id="new-recipe-manuell" class="clickable">
-            <p>Neues Rezept manuell eingeben</p>
-        </div>
-        <div>
+    <div id="new-recipe" class="hidden modal-overlay">
+        <div id="new-recipe-modal" class="modal blue grid-login">
+            <div class="grid-login">
+                <div id="new-recipe-manuell" class="space-login clickable">
+                    <p>Gib ein neues Rezept manuell ein:</p>
+                    <i class="fa fa-pencil"></i>
+                </div>
+                <div class="space-login">
+                    <div></div>
+                    <p>oder</p>
+                    <div></div>
+                </div>
+                <div class="space-login">
+                    <p> Lade das Rezept über einen Link runter:</p>
+                </div>
+                <div class="space-login">
+                    <input id="scrape-url" placeholder="URL...">
+                    <i id="scrape-button" class="fa fa-download clickable"></i>
+                </div>
+                <div class="space-login">
+                    <div></div>
+                    <i id="back" class="fa fa-long-arrow-left clickable"></i>
+                    <div></div>
+                </div>
+                
+            </div>
             <p id="scrape-errors"></p>
         </div>
     </div>
+
+    <div id="waiting" class="hidden modal-overlay">
+        <div id="waiting-modal" class="modal blue">
+                <p id="waiting-text"></p>
+                <i id="close-waiting" class="fa fa-long-arrow-left clickable hidden"></i>
+        </div>
+    </div>
+
 
 <!------------------------------------------------------------------------------------------>
 <!---------------------------- Bearbeitungsmodus ------------------------------------------->
@@ -1033,55 +1093,29 @@
                 alert("Du bist nicht autorisiert, Rezepte zu erstellen. Bitte logge dich ein.");
                 return
             }
+
+            //Scrollen verboten
+            document.body.style.overflow = "hidden";
             
-            //Ändere die Überschrift
-            document.getElementById("header-title").textContent = "neues Rezept hinzufügen";
 
-            //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
-            window.scrollTo(0, 0)
-
-            //Rezepteübersicht ausblenden, neue Rezepte-Seite einblenden
-            document.getElementById("book").classList.add("hidden");
+            //neues Rezepte fenster zeigen
             document.getElementById("new-recipe").classList.remove("hidden");
 
-            //Suche und Menu ausblenden
-            hideSearch();
-            hideMenu();
-
-            //Zurückgeh Icon einblenden
-            document.getElementById("menu-book").classList.add("hidden");
-            document.getElementById("menu-scrape").classList.remove("hidden");
-
-            openMenu();
 
         })
 
         /**
          * Klicken des Menu-Icons: Zurück zur Rezepteübersicht von der neues Rezept-Seite
          */
-        document.getElementById("back-to-book").addEventListener("click", function()
+        document.getElementById("back").addEventListener("click", function()
         { 
-            //Ändere die Überschrift
-            document.getElementById("header-title").textContent = "Rezepte";
+            //Scrollen erlauben
+            document.body.style.overflow = "";
 
-            //Nach oben Scrollen (Da neue Ansicht geöffnet wird)
-            window.scrollTo(0, 0)
 
-            //Rezepteübersicht einblenden, neue Rezepte-Seite ausblenden
-            document.getElementById("book").classList.remove("hidden");
+            //neues Rezepte fenster ausblenden
             document.getElementById("new-recipe").classList.add("hidden");
 
-            //Suche und Menu ausblenden
-            showSearch();
-            showMenu();
-
-            //Richtige Menu-Icons einblenden einblenden
-            document.getElementById("menu-book").classList.remove("hidden");
-            document.getElementById("menu-scrape").classList.add("hidden");
-
-            //Menu schließen
-            closeMenu();
-            
             
             //URL und Meldungen clearen 
             document.getElementById("scrape-url").value = ""; 
@@ -1718,8 +1752,8 @@
             }
 
             //Warte Nachricht
-            document.getElementById("scrape-errors").textContent = "Das Rezept wird gescraped... Warte noch einen Moment.";
-
+            document.getElementById("waiting").classList.remove("hidden");
+            document.getElementById("waiting-text").textContent = "Das Rezept wird gescraped... Warte noch einen Moment.";
             //Token holen
             const token = session.access_token
 
@@ -1734,20 +1768,29 @@
             //Überprüfen, ob erfolgreich und Info schreiben.
             if (data.success)
             {
-                document.getElementById("scrape-errors").textContent = "Das Rezept wurde erfolgreich gespeichert.";
+                document.getElementById("waiting-text").textContent = "Das Rezept wurde erfolgreich gespeichert.";
+                document.getElementById("close-waiting").classList.remove("hidden");
             }
             else
             {
-                document.getElementById("scrape-errors").textContent = "Das Rezept konnte nicht gespeichert werden. Ein Fehler ist aufgetreten: " + data.error;    
+                document.getElementById("waiting-text").textContent = "Das Rezept konnte nicht gespeichert werden. Ein Fehler ist aufgetreten: " + data.error; 
+                document.getElementById("close-waiting").classList.remove("hidden");   
             }
 
         }
+
+        document.getElementById("close-waiting").addEventListener("click", function()
+        {
+            document.getElementById("waiting").classList.add("hidden");
+        })
 
         document.getElementById("scrape-button").addEventListener("click", function()
         {
             const url = document.getElementById("scrape-url").value;
             scrapeRecipe(url)
         })
+
+
 
 
 
