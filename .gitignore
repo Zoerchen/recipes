@@ -1,5 +1,5 @@
 .venv/
 venv/
 __pycache__/
-scrape_recipe/.env
+backend/.env
 *.pyc
