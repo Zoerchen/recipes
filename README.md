@@ -7,7 +7,7 @@ recipes/
 │   ├── js/
 │   └── images/
 │
-├── scrape-recipe/ ---> backend/
+├── backend/
 │   ├── main.py
 │   ├── requirements.txt
 │   └── .env
@@ -16,6 +16,3 @@ recipes/
 ├── .venv/
 └── .gitignore
 └── .gitattributes
-
-scraperecipes zu backend umnennen -> Render bearbeiten
--> gitignore anpassen
