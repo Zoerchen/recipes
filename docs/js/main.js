@@ -8,8 +8,8 @@
         let currentIndex = 0; // Der Index von recipe_all des ausgewählten Rezeptes
         let recipes_search = []; // alle Rezepte, die einem Suchkriterium entsprechen
         let isNew = false; //Rezept ist neu
-        const url_db = 'https://uljwzbmfeywdenmwfgwl.supabase.co' // Datenbank url
-        const key_db = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsand6Ym1mZXl3ZGVubXdmZ3dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDI0MDksImV4cCI6MjA5MzM3ODQwOX0.PnwrRKOBCH7k2Jqr37xY-r0RTpmaseZvLdlm_QLkv_E' // Datenbank-Key
+        const url_db = 'https://asbmoywkzznouburpxnl.supabase.co' // Datenbank url
+        const key_db = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzYm1veXdrenpub3VidXJweG5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTYxNzQsImV4cCI6MjA5MzgzMjE3NH0.Wsk_WVoyKXn-e0wWuz6xOUR3e6uMZkDbVF1e8rQK2Wg"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////// allgemeine Funktionen /////////////////////////////////////////////////////////////////////////
