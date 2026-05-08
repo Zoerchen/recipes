@@ -575,7 +575,10 @@
     <div id="waiting" class="hidden modal-overlay">
         <div id="waiting-modal" class="modal blue">
                 <p id="waiting-text"></p>
-                <i id="close-waiting" class="fa fa-long-arrow-left clickable hidden"></i>
+                <div class="space-login">
+                    <i id="close-waiting" class="fa fa-long-arrow-left clickable hidden"></i>
+                    <i  id ="to-recipe" class="fa fa-eye clickable hidden"></i>
+                </div>
         </div>
     </div>
 
@@ -1122,6 +1125,8 @@
             //URL und Meldungen clearen 
             document.getElementById("scrape-url").value = ""; 
             document.getElementById("scrape-errors").textContent = "";
+
+            updateRecipes();
         })    
 
         
@@ -1776,6 +1781,9 @@
             {
                 document.getElementById("waiting-text").textContent = "Das Rezept wurde erfolgreich gespeichert.";
                 document.getElementById("close-waiting").classList.remove("hidden");
+                document.getElementById("to-recipe").classList.remove("hidden");
+                
+                updateRecipes();
             }
             else
             {
@@ -1786,8 +1794,38 @@
         }
 
         document.getElementById("close-waiting").addEventListener("click", function()
-        {
-            document.getElementById("waiting").classList.add("hidden");
+        {   
+            //Wenn nicht erfolgreich gespeichert  zurück zum neue rezepte seite
+            if (document.getElementById("to-recipe").classList.contains("hidden"))
+            {
+                document.getElementById("waiting").classList.add("hidden");
+                document.getElementById("close-waiting").classList.add("hidden");   
+            }
+            //wenn erfolgreich gespeichert alles schließen
+            else
+            {   
+                //Scrollen erlauben
+                document.body.style.overflow = "";
+
+                //waiting schließen
+                document.getElementById("waiting").classList.add("hidden");
+                document.getElementById("close-waiting").classList.add("hidden");
+                document.getElementById("to-recipe").classList.add("hidden");
+                
+
+                //neues Rezepte fenster ausblenden
+                document.getElementById("new-recipe").classList.add("hidden");
+
+            
+                //URL und Meldungen clearen 
+                document.getElementById("scrape-url").value = ""; 
+                document.getElementById("scrape-errors").textContent = "";
+            } 
+        })
+
+        document.getElementById("to-recipe").addEventListener("click", function()
+        { 
+            alert("in Arbeit");
         })
 
         document.getElementById("scrape-button").addEventListener("click", function()
