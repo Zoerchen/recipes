@@ -1,0 +1,376 @@
+
+
+:root /*Definiere Farben, Schriftart */
+{
+    --lila: rgb(125, 21, 154);
+    --hellblau: rgb(109, 186, 219);
+    --dunkelblau: rgb(75, 66, 200);
+    --dunkelblau-akzent: rgb(47, 39, 156);
+    --dunkelblau_transparent: rgb(75, 66, 200, 0.5);
+    --hellblau-transparent: rgb(109, 186, 219, 0.5);
+    --rosa: rgb(255, 147, 232);
+    --dunkelrosa: rgb(190, 47, 159);
+    --hintergrund: rgb(210, 128, 232);
+    --rosa-transparent: rgb(255, 147, 232, 0.5);
+    --schriftart: "Times New Roman", Times, serif;
+}
+
+body /* globale Einstellungen */
+{
+    color: var(--lila); /*Schrift-Farbe*/
+    font-family: var(--schriftart); /*Schrift-Art*/
+    background-color: var(--hintergrund) /*Hintergrundsfarbe*/
+}
+
+p
+{
+    margin: 5px 0; /* oben/unten kleiner Abstand */
+}
+
+button /* Style des Buttons */
+{
+    background-color: var(--hellblau);
+    color: var(--dunkelblau);
+    padding: 10px;
+    box-shadow: 5px 5px  var(--dunkelblau);
+    border-radius: 10px;
+    border: none;
+    cursor: pointer; /* Mauszeiger wird zur Hand beim Hover */
+    transition: transform 0.1s, box-shadow 0.1s;
+    font-family: var(--schriftart);
+}
+
+button:active /* Style des Buttons, wenn er gedrückt wird*/
+{
+    box-shadow: none;
+    transform: translateY(2px);
+    
+}
+
+button:hover
+{
+    box-shadow: 3px 3px var(--dunkelblau);
+    transform: translateY(2px);
+}
+
+
+.hidden /* Klasse von Elementen die versteckt sind*/
+{
+    display: none !important;
+}
+
+.clickable /* Klasse von Elementen, die klickbar sind*/
+{
+    cursor: pointer;
+}
+
+.clickable:active /* Klasse von Elementen, die klickbar sind, in aktivierten Zustand*/
+{
+    color: var(--dunkelblau-akzent);
+    transform: translateY(1px);
+}
+
+/*!!!*/
+/********* Modal komplett überarbeiten************/
+.modal-overlay
+{
+    position: fixed;      /* bleibt immer im Sichtfeld, auch beim Scrollen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dunkelblau_transparent); /* halbtransparentes Schwarz */
+    display: flex;
+    align-items: center;
+    justify-content: center;  /* Modal-Inhalt zentrieren */
+    z-index: 999;             /* über allem anderen */
+}
+
+.modal
+{
+    padding: 2rem;
+    text-align: center;
+    gap:10px;
+}
+
+
+.blue /*Klasse von Elementen in blauen Boxen*/
+{
+    box-shadow: 5px 5px var(--dunkelblau);
+    background-color: var(--hellblau);
+    color: var(--dunkelblau) !important;
+}
+
+.blue:hover
+{
+    box-shadow: 3px 3px var(--dunkelblau);
+    transform: translateY(2px);
+}
+
+::placeholder /*Placeholder-Style (Input)*/
+{ 
+color: var(--dunkelblau);
+opacity: 1; /* Firefox */
+font-family: var(--schriftart);
+}
+
+.scrollable::-webkit-scrollbar {
+    width: 6px; /* schmale Scrollbar */
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: transparent; /* Hintergrund unsichtbar */
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background: rgb(125, 21, 154); /* lila Farbe */
+    border-radius: 10px; /* abgerundet */
+}
+
+/******************************************************************/ 
+/********************* Header *************************************/  
+/******************************************************************/
+
+#header /*Style von Header*/
+{ 
+    
+    position: fixed;
+    z-index: 100;
+    top: 10px;
+    left: 500px;
+    right: 500px;
+    transition: padding 0.3s, font-size 0.3s;
+}
+
+.header-small /*reduzierte Form des Headers*/
+{ 
+    padding: 0px 5px; 
+    font-size: 10px;
+}
+
+#header-main
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* links, mitte, rechts */
+    padding: 0px 20px; /*oben-unten links-rechts*/
+}
+
+
+
+#search-field
+{
+    
+    height: 20px;
+    padding: 0px 10px  5px; /*oben links-rechts unten*/
+}
+
+input
+{
+    box-sizing: border-box;
+    height: 20px;
+    
+    background: transparent;
+    border-radius: 10px 10px 10px 10px; 
+    color: var(--dunkelblau);
+    border: 2px solid var(--dunkelblau);
+    font-size: 14px;
+    text-indent: 5px;
+}
+
+input:focus
+{
+    border-color: var(--dunkelblau-akzent);
+    outline: none;
+    background: transparent;
+    color: var(--dunkelblau-akzent);
+}
+
+input:focus::placeholder
+{
+    color: var(--dunkelblau-akzent);
+}
+
+
+.input-error
+{
+    border-color: var(--dunkelrosa); 
+    color: var(--dunkelrosa);
+    background: var(--rosa-transparent);
+}
+
+.input-error::placeholder /*Placeholder-Style (Input)*/
+{ 
+    color: var(--dunkelrosa);
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--hellblau-transparent) inset; /* Hintergrundfarbe */
+    -webkit-text-fill-color: var(--dunkelblau); /* Textfarbe */
+}
+
+#search-value
+{
+    width:100%;
+}
+
+
+.search-mode
+{
+    border-radius: 0px 0px 10px 10px;    
+}
+
+#menu-book, #menu-detail, #menu-edit, #menu-scrape
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* links, mitte, rechts */
+    padding: 0px 20px  5px; /*oben links-rechts unten*/
+}
+
+
+
+/********************* Hauptansicht: Rezepte übersicht ****************************/ 
+
+#main
+{
+    padding-top: 85px; /* ungefähr die Höhe des Headers */
+
+}
+
+.card /* Style von Rezeptekarten*/
+{
+    
+    aspect-ratio: 1; /*Quadration*/
+    background-color: rgb(255, 147, 232);
+    box-shadow: 5px 5px rgb(125, 21, 154);
+    cursor: pointer; /* Mauszeiger wird zur Hand beim Hover */
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.card:active /* Style der Karte, wenn sie gedrückt wird*/
+{
+    box-shadow: none !important;
+    transform: translateY(5px) !important;
+    
+}
+
+.card:hover
+{
+    box-shadow: 3px 3px rgb(125, 21, 154);
+    transform: translateY(2px);
+}
+
+
+
+.card img /* Einstellungen für die Bilder auf den Karten*/
+{
+    width: 100%;        /* Bild füllt die Kartenbreite */
+    height: 70%;      /* feste Höhe */
+    object-fit: cover;  /* Bild wird zugeschnitten, nicht verzerrt */
+    background-color: rgb(109, 186, 219);
+    object-position: center;
+    
+}
+
+.card h2
+{
+    padding-left: 10px;
+}
+
+.card h2:hover::after {
+    content: attr(data-tooltip);
+    background: rgba(125, 21, 154);
+    color: rgb(255, 147, 232);
+    position: absolute;
+    white-space-collapse: break-spaces;
+    width: fit-content;
+    font-size: 12px;
+}
+
+
+.grid-container /* Grid stlye für die Rezeptekarten*/
+{
+    display: grid; /*definiert grid, inline-grid oder grid*/
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 30px;
+    grid-gap: 30px;
+}
+
+
+/******************* Login *************************************++*********************/
+
+
+.grid-login
+{
+    display: flex;
+    flex-direction: column; /* Anordnung untereinander */
+    gap: 10px; /* Abstand zwischen den Elementen */
+    justify-content: space-between;
+}
+
+.space-login
+{
+    display: flex;
+    align-items: center; /* sorgt für gleiche Höhe */
+    justify-content: space-between;
+    gap: 10px; /* Abstand zwischen den Elementen */
+}
+
+@keyframes wackeln {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+}
+
+.wackel-element {
+    display: inline-block;
+    animation: wackeln 0.4s cubic-bezier(.36,.07,.19,.97);
+}
+
+/********************* Detailansicht von einem Rezept ****************************/ 
+
+
+
+/*#detail-image img
+{
+    object-fit: cover;  
+    border-radius: 0px 10px 0px 0px;
+    height: 100%;      
+    width: 100%;        
+}*/
+
+
+/*[contenteditable="true"] {
+    border: 2px solid rgb(125, 21, 154);
+    border-radius: 8px;
+    padding: 5px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.3);
+}*/
+
+/********************* Neues Rezept  ****************************/
+
+
+#scrape-url
+{
+    width: 100%;
+}
+
+
+/*<div id="new-recipe" class="hidden">
+<div>
+    <input id="scrape-url" placeholder="Füge den Link des Rezeptes ein">
+    <p id="scrape-button" class="clickable">Scrape!</p>
+</div>
+<p id="new-recipe-manuell" class="clickable">Neues Rezept manuell eingeben</p>
+<div>
+    <p id="scrape-errors"></p>
+</div>
+</div>*/
+
+
+/**/
