@@ -1,0 +1,62 @@
+* { /*for all elements: the padding and border are included in the calculation of the width and height*/
+  box-sizing: border-box;
+}
+
+.hidden /* Klasse von Elementen die versteckt sind*/
+{
+    display: none !important;
+}
+
+.scrollable-horizontal { /* Macht Container horizontal scrollable*/
+  overflow: auto;
+  white-space: nowrap;
+
+}
+
+.flex-container-row  {
+    display: flex; 
+    flex-flow: row nowrap; /*(direction: column, row, column-reverse, row-reverse ), wrap / nowrap*/
+    justify-content: space-between; /*flex-start, center, flex-end, space-around, space-between,space-evenly */
+    align-items: center; /*flex-start, center, flex-end,stretch*/
+}
+
+.flex-container-column  {
+    display: flex; 
+    flex-flow: column nowrap; /*(direction: column, row, column-reverse, row-reverse ), wrap / nowrap*/
+    justify-content: center; /*flex-start, center, flex-end, space-around, space-between,space-evenly */
+    align-items: space-between; /*flex-start, center, flex-end,stretch*/
+}
+
+.stetch-vertical {
+    align-items: stretch !important; /*flex-start, center, flex-end,stretch*/
+}
+
+
+.footer{
+width: 100%;
+background-color: transparent;
+ display: flex;
+  justify-content: center;
+padding-bottom: 2px;
+padding-top: 2px;
+  width: 100%;
+}
+
+.footer a{
+color: black;
+float: left;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: white;
+}
+
+.footer a:focus {
+  outline: none;
+}
+
+
+    

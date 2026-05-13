@@ -1,0 +1,217 @@
+<!DOCTYPE html
+<html>
+
+<head> <!-- unsichtbare Infos (Titel, Zeichensatz usw.) -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> <!-- Icon-Liberary -->
+
+    <link rel="stylesheet" href="css/utilities_test.css"> <!-- Link zu utilities-->
+
+    <link rel="stylesheet" href="css/styles_test.css"> <!-- Link zu styles-->
+
+    <link rel="stylesheet" href="css/styles_shopping_list.css"> <!-- Link zu styles-->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- Supabase JavaScript Library benutzen -->
+    
+    <meta charset="UTF-8"> <!-- welche Zeichen der Browser darstellen soll  -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Rezepte</title> <!-- Titel der beim Tab angezeigt wird-->
+
+</head>
+
+<body>
+
+<!----- Header ---------------------------------->
+<div class="header">
+  <h1>Rezepte-Sammlung</h1>
+</div>
+
+<!----- Haupt-Navigierbar ----------------------->
+<div id="main-navbar" class="navbar">
+  <a class="active" onclick="showPage(this,'book'), toggleSubHeader('book-header', 'shopping-header')">Rezepte</a>
+  <a onclick="showPage(this,'shopping'), toggleSubHeader('shopping-header', 'book-header')">Einkaufsliste</a>
+  <a class="right" onclick="toggleSubnav('login')">Login</a>
+</div>
+
+<!----- Log-In ---------------------------------->
+<div id="login" style="display:none; background-color: #04AA6D;">
+  <input type="text" placeholder="Benutzername">
+  <input type="password" placeholder="Passwort">
+  <p>--</p>
+  <p>--</p>
+  <p>--</p>
+  <p>--</p>
+</div>
+
+
+<!----- Rezepte-Buch ---------------------------->
+<div id="book" class="page"> 
+
+    <!----- Head-bar mit Suche und Kategorien --->
+    <div id="book-header" class="flex-container-column sub-header">
+        <!----- Kategorien -> dynamisch --------->
+        <div id="myBtnContainer" class="scrollable-horizontal">
+            <button class="btn active" onclick="filterSelection('all')"> Show all</button>
+            <li><a><button class="btn" onclick="filterSelection('nature')"> Nature</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('cars')"> Cars</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+            <li><a><button class="btn" onclick="filterSelection('people')"> People</button></a></li>
+        </div>
+        <div class="flex-container-row">
+            <!----- Suche ----------------------->
+            <form class="example flex-container-row stetch-vertical" action="action_page.php">
+                <input type="text" id="mySearch" onkeyup="myFunction()" placeholder="Search.." name="search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+            <!----- Neues Rezept ---------------->
+            <button >Neues Rezept</button>
+        </div>
+        
+    </div>
+
+
+    <!-- Portfolio Gallery Grid -->
+    <div class="row">
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+    <div class="column cars">
+        <div class="content">
+        <img src="images/favicon.JPG" style="width:100%">
+        <h4>Jorgen</h4>
+        <p>Jorgen ist so cute.</p>
+        </div>
+    </div>
+
+    
+    <!-- END GRID -->
+    </div>
+
+</div>
+
+
+<!----- Detail-Rezept --------------------------->
+<div id="recipe" class="page" style="display:none;">
+
+    <!----- Subnavigation ----------------------->
+    <div class="navbar">
+  <a href="#">Vorheriges Rezept</a>
+  <a href="#">Nächstes Rezept</a>
+  <a href="#">Rezept bearbeiten</a>
+  <a href="#">Orginalrezept anschauen</a>
+  </div>
+    <!----- Körper ------------------------------>
+    <div class="main">
+        <h2>Rezeeeept</h2>
+        <h5>Title description, Dec 7, 2017</h5>
+        <div class="fakeimg" style="height:200px;">Image</div>
+        <p>Some text..</p>
+        <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+        <br>
+        <h2>TITLE HEADING</h2>
+        <h5>Title description, Sep 2, 2017</h5>
+        <div class="fakeimg" style="height:200px;">Image</div>
+        <p>Some text..</p>
+        <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+</div>
+
+<!----- Einkaufsliste --------------------------->
+<div id="shopping" class="page" style="display:none;">
+
+<!----- Head-bar mit Suche und Kategorien --->
+    <div id="shopping-header" class="flex-container-column sub-header hidden">
+        <p>Teeeeeeeext</p>
+        
+    </div>
+
+    <div class="flex-container-column">
+        <div>
+        <input type="text" id="myInput" placeholder="Title...">
+        <span onclick="newElement()" class="addBtn">Add</span>
+        </div>
+        <div>
+        <ul id="myUL">
+        <li>Orange</li>
+        </ul>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<!----- Footer ---------------------------------->
+<div class="footer hidden">
+  <h2>Footer</h2>
+</div>
+
+<!----- eingebundende Skripts ------------------->
+<script src="js/navigation.js"></script> 
+<script src="js/category.js"></script> 
+<script src="js/shopping_list.js"></script> 
+ 
+</body>
