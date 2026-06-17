@@ -131,8 +131,10 @@ def scrapingRecipe(url):
         #Format: ingredients list
         # List into string
         # Es gibt auch Ingredient_groups (list) mit Infos wofür die Ingredients genutzt werden
+        #ingredients_get = safe_get(json, "ingredients")
+        #ingredients = ', '.join(ingredients_get) if ingredients_get else ""
         ingredients_get = safe_get(json, "ingredients")
-        ingredients = ', '.join(ingredients_get) if ingredients_get else ""
+        ingredients = json.dumps(ingredients_get) if ingredients_get else "[]"
 
 
         #time

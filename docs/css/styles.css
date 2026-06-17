@@ -2,11 +2,11 @@
 
 :root /*Definiere Farben, Schriftart */
 {
-    --lila: rgb(125, 21, 154);
-    --hellblau: rgb(109, 186, 219);
+    --lila: #7d159a;
+    --hellblau: #6dbadb;
     --dunkelblau: rgb(75, 66, 200);
     --dunkelblau-akzent: rgb(47, 39, 156);
-    --dunkelblau_transparent: rgb(75, 66, 200, 0.5);
+    --dunkelblau_transparent: #4b42c880;
     --hellblau-transparent: rgb(109, 186, 219, 0.5);
     --rosa: rgb(255, 147, 232);
     --dunkelrosa: rgb(190, 47, 159);
