@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+import json
 
 ########################################################################################################################################################
 ##################### FastAPI ##########################################################################################################################
@@ -108,23 +109,23 @@ def scrapingRecipe(url):
     
 
         # JSON mit allen Informationen erstellen
-        json = scraper.to_json() 
+        recipe_json = scraper.to_json() 
 
         # Funktion, um die Elemente mit Werten zufüllen, falls vorhanden
-        def safe_get(json, key):
+        def safe_get(recipe_json, key):
             try:
-                value = json[key]
+                value = recipe_json[key]
                 return value if value is not None else ""
             except Exception as e:
                 print(f"{key} nicht gefunden: {e}")
                 return ""
 
         # Elemente mit Strings füllen
-        title        = safe_get(json, "title")
-        url          = safe_get(json, "canonical_url")
-        image        = safe_get(json, "image")
-        description  = safe_get(json, "description")
-        yields       = safe_get(json, "yields")
+        title        = safe_get(recipe_json, "title")
+        url          = safe_get(recipe_json, "canonical_url")
+        image        = safe_get(recipe_json, "image")
+        description  = safe_get(recipe_json, "description")
+        yields       = safe_get(recipe_json, "yields")
         created = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         changed = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
@@ -133,15 +134,15 @@ def scrapingRecipe(url):
         # Es gibt auch Ingredient_groups (list) mit Infos wofür die Ingredients genutzt werden
         #ingredients_get = safe_get(json, "ingredients")
         #ingredients = ', '.join(ingredients_get) if ingredients_get else ""
-        ingredients_get = safe_get(json, "ingredients")
+        ingredients_get = safe_get(recipe_json, "ingredients")
         ingredients = json.dumps(ingredients_get) if ingredients_get else "[]"
 
 
         #time
         #Erstmal die drei möglichen Zeit Angaben holen
-        total_time = safe_get(json, "total_time")
-        prep_time = safe_get(json, "prep_time")
-        cook_time = safe_get(json, "cook_time")
+        total_time = safe_get(recipe_json, "total_time")
+        prep_time = safe_get(recipe_json, "prep_time")
+        cook_time = safe_get(recipe_json, "cook_time")
         #und dann als gesamten String vereinen
         time = ""
         time += ("Gesamtzeit: " + str(total_time) + " ") if total_time else ""
@@ -150,8 +151,8 @@ def scrapingRecipe(url):
 
 
         #category soll mit category (string) und keywords (string) gefüllt werden 
-        category_get = safe_get(json, "category")
-        keywords_get = safe_get(json, "keywords")
+        category_get = safe_get(recipe_json, "category")
+        keywords_get = safe_get(recipe_json, "keywords")
         keywords = ', '.join(keywords_get) if keywords_get else ""
         # als string vereinigen
         if (category_get and keywords):
@@ -165,20 +166,20 @@ def scrapingRecipe(url):
 
         #instructions (type string)
         # es gibt auch noch instructions_list (list)
-        instructions = safe_get(json, "instructions")
+        instructions = safe_get(recipe_json, "instructions")
 
 
         #notes
-        language = safe_get(json, "language")
-        site_name = safe_get(json, "site_name")
-        author = safe_get(json, "author")
-        cooking_method = safe_get(json, "cooking_method")
-        cuisine = safe_get(json, "cuisine")
-        equipment = safe_get(json, "equipment")
-        dietary_restrictions = safe_get(json, "dietary_restrictions")
-        nutrients = safe_get(json, "nutrients")
-        ratings = safe_get(json, "ratings")
-        rating_count = safe_get(json, "rating_count")
+        language = safe_get(recipe_json, "language")
+        site_name = safe_get(recipe_json, "site_name")
+        author = safe_get(recipe_json, "author")
+        cooking_method = safe_get(recipe_json, "cooking_method")
+        cuisine = safe_get(recipe_json, "cuisine")
+        equipment = safe_get(recipe_json, "equipment")
+        dietary_restrictions = safe_get(recipe_json, "dietary_restrictions")
+        nutrients = safe_get(recipe_json, "nutrients")
+        ratings = safe_get(recipe_json, "ratings")
+        rating_count = safe_get(recipe_json, "rating_count")
         #als String vereinigen \n Absatz
         notes = ""
         notes += ("Sprache: " + language +"\n") if language else ""
