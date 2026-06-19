@@ -166,7 +166,7 @@
 
         /**
          * Die Detailansicht schließen und die Rezepteübersicht öffnen.
-         */
+         */a
         function detailToRecipes()
         {
             //Detailsicht ausblenden und leeren
@@ -482,6 +482,25 @@
             detailRecipe(currentIndex);
 
         }
+
+
+    (async function() {
+    const params = new URLSearchParams(window.location.search);
+    const importUrl = params.get('import');
+    if (!importUrl) return;
+
+    // Warten bis Supabase Session geladen ist
+    db.auth.onAuthStateChange(async (event, session) => {
+        if (session) {
+            document.getElementById("new-recipe").classList.remove("hidden");
+            document.getElementById("scrape-url").value = importUrl;
+            await scrapeRecipe(importUrl);
+            
+            // URL-Parameter aus der Adressleiste entfernen (sieht sauberer aus)
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+})();
 
 
 

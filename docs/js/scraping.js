@@ -89,13 +89,3 @@
             const url = document.getElementById("scrape-url").value;
             await scrapeRecipe(url)
         })
-// ↓ NEU: ganz am Ende einfügen
-        (async function() {
-            const params = new URLSearchParams(window.location.search);
-            const importUrl = params.get('import');
-            if (importUrl) {
-                document.getElementById("new-recipe").classList.remove("hidden");
-                document.getElementById("scrape-url").value = importUrl;
-                await scrapeRecipe(importUrl);
-            }
-        })();
