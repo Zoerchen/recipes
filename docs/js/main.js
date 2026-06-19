@@ -490,11 +490,22 @@
     const importUrl = params.get('import');
     if (!importUrl) return;
 
-    let alreadyRun = false;  // ← Flag
+    let alreadyRun = false;
+
+    // Nach 5 Sekunden abbrechen wenn nicht eingeloggt
+    setTimeout(() => {
+        if (!alreadyRun) {
+            alreadyRun = true;
+            document.getElementById("new-recipe").classList.remove("hidden");
+            document.getElementById("waiting").classList.remove("hidden");
+            document.getElementById("waiting-text").textContent = "Du bist nicht eingeloggt.";
+            document.getElementById("close-waiting").classList.remove("hidden");
+        }
+    }, 5000);
 
     db.auth.onAuthStateChange(async (event, session) => {
         if (session && !alreadyRun) {
-            alreadyRun = true;  // ← sofort sperren
+            alreadyRun = true;
             document.getElementById("new-recipe").classList.remove("hidden");
             document.getElementById("scrape-url").value = importUrl;
             setTimeout(async () => {
