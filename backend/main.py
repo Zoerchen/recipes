@@ -62,7 +62,7 @@ def to_str(value):
 ##################### Funktion: Rezept von URL scrapen ###############################################################################################
 ########################################################################################################################################################
 
-def scrapingRecipe(url):
+def scrapingRecipe(url, user_id):
 
 ##################### Testen, ob Webseite supported wird ###############################################################################################
 
@@ -202,7 +202,7 @@ def scrapingRecipe(url):
             "title": title, "url" : url, "image" : image,
             "description" : description, "ingredients" : ingredients, "yields" : yields,
             "instructions" : instructions, "time" : time, "category" : category,
-            "notes" : notes, "created" : created, "changed" : changed
+            "notes" : notes, "created" : created, "changed" : changed, "user_id": user_id
             }).execute()
 
         return {"success": True}
@@ -238,7 +238,8 @@ async def scrape_recipe(request: ScrapeRequest):
     if not user.user:
         result = {"success": False, "error": "Nicht eingeloggt"}
     else:
-        result = scrapingRecipe(request.url)
+        user_id = user.user.id
+        result = scrapingRecipe(request.url, user_id)
 
     return result
 
