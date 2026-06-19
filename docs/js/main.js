@@ -467,23 +467,3 @@ async function saveRecipe() {
 
 }
 
-
-(async function () {
-    const params = new URLSearchParams(window.location.search);
-    const importUrl = params.get('import');
-    if (!importUrl) return;
-
-    const { data: { session } } = await db.auth.getSession();
-
-    if (!session) {
-        document.getElementById("waiting").classList.remove("hidden");
-        document.getElementById("waiting-text").textContent = "Du bist nicht eingeloggt.";
-        document.getElementById("close-waiting").classList.remove("hidden");
-        return;
-    }
-
-    document.getElementById("new-recipe").classList.remove("hidden");
-    document.getElementById("scrape-url").value = importUrl;
-    await scrapeRecipe(importUrl);
-    window.history.replaceState({}, document.title, window.location.pathname);
-})();
