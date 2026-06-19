@@ -485,17 +485,18 @@
         }
 
 
- (async function() {
+(async function() {
     const params = new URLSearchParams(window.location.search);
     const importUrl = params.get('import');
     if (!importUrl) return;
 
+    let alreadyRun = false;  // ← Flag
+
     db.auth.onAuthStateChange(async (event, session) => {
-        if (session) {
+        if (session && !alreadyRun) {
+            alreadyRun = true;  // ← sofort sperren
             document.getElementById("new-recipe").classList.remove("hidden");
             document.getElementById("scrape-url").value = importUrl;
-            
-            // Kurz warten bis alles geladen ist
             setTimeout(async () => {
                 await scrapeRecipe(importUrl);
                 window.history.replaceState({}, document.title, window.location.pathname);
@@ -503,7 +504,6 @@
         }
     });
 })();
-
 
 
 
