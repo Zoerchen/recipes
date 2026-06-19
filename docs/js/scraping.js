@@ -85,7 +85,20 @@ document.getElementById("scrape-button").addEventListener("click", async functio
 
 
 
+document.addEventListener("DOMContentLoaded", function() {
 
+    document.getElementById("close-waiting").addEventListener("click", function () {
+        // ...
+    });
+
+    document.getElementById("to-recipe").addEventListener("click", function () {
+        alert("in Arbeit");
+    });
+
+    document.getElementById("scrape-button").addEventListener("click", async function () {
+        const url = document.getElementById("scrape-url").value;
+        await scrapeRecipe(url);
+    });
 
     (async function () {
         const params = new URLSearchParams(window.location.search);
@@ -106,3 +119,5 @@ document.getElementById("scrape-button").addEventListener("click", async functio
         await scrapeRecipe(importUrl);
         window.history.replaceState({}, document.title, window.location.pathname);
     })();
+
+});
