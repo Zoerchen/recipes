@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("waiting").classList.remove("hidden");
             document.getElementById("waiting-text").textContent = "Du bist nicht eingeloggt.";
             document.getElementById("close-waiting").classList.remove("hidden");
+            window.history.replaceState({}, document.title, window.location.pathname);
             return;
         }
 
