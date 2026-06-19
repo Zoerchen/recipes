@@ -167,6 +167,7 @@
         /**
          * Die Detailansicht schließen und die Rezepteübersicht öffnen.
          */
+        
         function detailToRecipes()
         {
             //Detailsicht ausblenden und leeren
