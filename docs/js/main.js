@@ -476,7 +476,6 @@ async function saveRecipe() {
     const { data: { session } } = await db.auth.getSession();
 
     if (!session) {
-        document.getElementById("new-recipe").classList.remove("hidden");
         document.getElementById("waiting").classList.remove("hidden");
         document.getElementById("waiting-text").textContent = "Du bist nicht eingeloggt.";
         document.getElementById("close-waiting").classList.remove("hidden");
